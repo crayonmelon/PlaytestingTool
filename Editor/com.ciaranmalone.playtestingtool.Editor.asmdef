@@ -1,0 +1,16 @@
+{
+    "name": "com.ciaranmalone.playtestingtool.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:589b8001af1f6af4985b65870c5c7f79"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

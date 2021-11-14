@@ -9,6 +9,9 @@ namespace PlaytestingTool
 {
     public class VisualizeMovementEditor : EditorWindow
     {
+        public List<PlayerData> PlayersData = new List<PlayerData>();
+        public List<PlayerData> ChosenPlayersData = new List<PlayerData>();
+
         public PlayerData playerData;
         List<TrackedPosition> tp;
         string SceneName;
@@ -19,6 +22,7 @@ namespace PlaytestingTool
         GUIStyle lableStyle;
         bool StyleNotSet = true;
 
+        int flags = 0;
 
         [MenuItem("Tools/Visualizers/VisualizeMovement")]
         static void Init() => GetWindow<VisualizeMovementEditor>();
@@ -38,73 +42,116 @@ namespace PlaytestingTool
 
         void OnEnable()
         {
+            SceneName = EditorSceneManager.GetActiveScene().name;
             GetPlayersData();
             Chosen();
 
             Selection.selectionChanged += Repaint;
             SceneView.duringSceneGui += this.DuringSceneGUI;
-            EditorSceneManager.activeSceneChangedInEditMode += SceneChange;
+            EditorSceneManager.sceneOpened += SceneChange; 
         }
+
         void OnDisable()
         {
             Selection.selectionChanged -= Repaint;
             SceneView.duringSceneGui -= this.DuringSceneGUI;
-            EditorSceneManager.activeSceneChangedInEditMode -= SceneChange;
-
+            EditorSceneManager.sceneOpened -= SceneChange;
         }
 
         public void OnGUI()
         {
             GUILayout.Label("Choose Player Data:");
-
             GUILayout.Label(SceneName);
-            index = EditorGUILayout.Popup(index, choices.ToArray());
 
-            if (GUILayout.Button("Select"))
-                Chosen();
+            //index = EditorGUILayout.Popup("Player Data",index, choices.ToArray());
 
+            if(choices.Count > 1)
+            {
+                flags = EditorGUILayout.MaskField("Player Data", flags, choices.ToArray());
+                if (GUILayout.Button("Select"))
+                    Chosen();
+            }
+            else
+                GUILayout.Label("No Data Collected Yet");
         }
 
         void Chosen()
         {
+            ChosenPlayersData.Clear();
+
+            for (int i = 0; i < PlayersData.Count; i++)
+            {
+                if ((flags & (1 << i)) == (1 << i)) ChosenPlayersData.Add(PlayersData[i]);
+            }
             playerData = JsonManager.LoadPlayerDataJson(choices[index]);
             tp = playerData.trackedPositions;
             SceneView.RepaintAll();
         }
 
-
         void DuringSceneGUI(SceneView sceneView)
         {
             if (StyleNotSet) InitStyle();
 
-            Handles.Label(tp[0].trackedPosition, "STARTED", lableStyle);
-
             Handles.color = new Color(1, 1f, 0.4f, 1);
-            for (int i = 0; i < tp.Count; i++)
-            {
-                if (i > 0 && i < tp.Count)
-                {
-                    Handles.DrawLine(tp[i - 1].trackedPosition, tp[i].trackedPosition, 10);
-                }
-            }
 
-            Handles.Label(tp[tp.Count - 1].trackedPosition, "END", lableStyle);
+            foreach (var playerData in ChosenPlayersData)
+            {
+                Handles.CubeHandleCap(
+                0,
+                playerData.trackedPositions[0].trackedPosition,
+                Quaternion.LookRotation(Vector3.up),
+                1f,
+                EventType.Repaint);
+
+                for (int i = 0; i < playerData.trackedPositions.Count; i++)
+                {
+                    if (i > 0 && i < playerData.trackedPositions.Count)
+                    {
+                        Handles.DrawLine(playerData.trackedPositions[i - 1].trackedPosition, 
+                            playerData.trackedPositions[i].trackedPosition, 10);
+                    }
+                }
+
+                Handles.CubeHandleCap(
+                0,
+                playerData.trackedPositions[playerData.trackedPositions.Count-1].trackedPosition,
+                Quaternion.LookRotation(Vector3.up),
+                1f,
+                EventType.Repaint);
+            }
         }
 
-        void SceneChange(Scene current, Scene next)
+        void SceneChange(Scene scene, OpenSceneMode mode)
         {
+            SceneName = scene.name;
 
-            SceneName = next.name;
             GetPlayersData();
         }
 
         void GetPlayersData()
         {
-            string[] allFiles = Directory.GetFiles("./Assets/PlayerData", "*.json");
-            foreach (string file in allFiles)
-                choices.Add(Path.GetFileName(file));
+            PlayerData playerDataTemp;
+            string path = "./Assets/PlayerData/";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-            choices.Reverse();
+            string[] allFiles = Directory.GetFiles("./Assets/PlayerData", "*.json");
+
+            PlayersData.Clear();
+            ChosenPlayersData.Clear();
+            choices.Clear();
+
+            foreach (string file in allFiles)
+            {
+                Debug.Log(file);
+                file.Contains(SceneName);
+                playerDataTemp = JsonManager.LoadPlayerDataJson(Path.GetFileName(file));
+
+                if(playerDataTemp.SceneName == SceneName)
+                {
+                    choices.Add(Path.GetFileName(file));
+                    PlayersData.Add(playerDataTemp);
+                }
+            }
         }
     }
 

@@ -14,8 +14,8 @@ namespace PlaytestingTool
                 string json = JsonUtility.ToJson(playerData, true);
                 string path = "./Assets/PlayerData/";
                 string file = $"PlayerData {fileName}.json";
+               
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
                 File.WriteAllText(path + file, json);
             }
             catch (Exception e)

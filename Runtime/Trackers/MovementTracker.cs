@@ -35,10 +35,10 @@ namespace PlaytestingTool
     [System.Serializable]
     public class TrackedPosition
     {
-        public Vector3 trackedPosition;
+        public Vector3Data trackedPosition;
         public float timeStamp;
 
-        public TrackedPosition(Vector3 tp, float tt)
+        public TrackedPosition(Vector3Data tp, float tt)
         {
             trackedPosition = tp;
             timeStamp = tt;

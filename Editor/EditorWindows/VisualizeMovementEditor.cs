@@ -20,17 +20,30 @@ namespace PlaytestingTool
         public int index = 0;
 
         GUIStyle lableStyle;
-        bool StyleNotSet = true;
+        GUILayoutOption[] SliderStyle;
 
+        bool StyleNotSet = true;
         int flags = 0;
 
         [MenuItem("Tools/Visualizers/VisualizeMovement")]
         static void Init() => GetWindow<VisualizeMovementEditor>();
+
+        public List<AreaPoints> areaPoints = new List<AreaPoints>();
+        SerializedProperty propAreaPoints;
+
+
+        public int hSliderValue = 0;
+        public int leftValue = 0;
+        public int rightValue;
+
+        private Color[] colors = new Color[] { Color.blue, Color.red, Color.green, Color.cyan, Color.magenta, Color.yellow, Color.gray, Color.white };
+
+        SerializedObject so;
+
         void InitStyle()
         {
             StyleNotSet = false;
 
-            Debug.Log("style");
             lableStyle = new GUIStyle(GUI.skin.label)
             {
                 alignment = TextAnchor.MiddleCenter,
@@ -38,10 +51,18 @@ namespace PlaytestingTool
                 fontStyle = FontStyle.Bold,
 
             };
+
+            SliderStyle = new GUILayoutOption[]
+            {
+                GUILayout.Height(48),
+            };
         }
 
         void OnEnable()
         {
+            so = new SerializedObject(this);
+            propAreaPoints = so.FindProperty("areaPoints");
+
             SceneName = EditorSceneManager.GetActiveScene().name;
             GetPlayersData();
             Chosen();
@@ -73,6 +94,13 @@ namespace PlaytestingTool
             }
             else
                 GUILayout.Label("No Data Collected Yet");
+
+            hSliderValue = Mathf.RoundToInt(GUILayout.HorizontalSlider(hSliderValue, leftValue, rightValue));
+
+
+            GUILayout.Label("WOWOWOWOW");
+            EditorGUILayout.PropertyField(propAreaPoints);
+
         }
 
         void Chosen()
@@ -83,6 +111,7 @@ namespace PlaytestingTool
             {
                 if ((flags & (1 << i)) == (1 << i)) ChosenPlayersData.Add(PlayersData[i]);
             }
+
             playerData = JsonManager.LoadPlayerDataJson(choices[index]);
             tp = playerData.trackedPositions;
             SceneView.RepaintAll();
@@ -92,10 +121,99 @@ namespace PlaytestingTool
         {
             if (StyleNotSet) InitStyle();
 
-            Handles.color = new Color(1, 1f, 0.4f, 1);
 
-            foreach (var playerData in ChosenPlayersData)
+            drawPath();
+            drawAreas();
+
+            SceneView.RepaintAll();
+        }
+
+        void drawAreas()
+        {
+            so.Update();
+
+            for (int i = 0; i < areaPoints.Count; i++)
             {
+                areaPoints[i].pointOne = Handles.PositionHandle(areaPoints[i].pointOne, Quaternion.identity);
+                areaPoints[i].pointTwo = Handles.PositionHandle(areaPoints[i].pointTwo, Quaternion.identity);
+
+                DrawCube(areaPoints[i].pointOne, areaPoints[i].pointTwo, areaPoints[i].color);
+
+            }
+
+            so.ApplyModifiedProperties();
+
+        }
+
+        void DrawCube(Vector3 pointOne, Vector3 pointTwo, Color color)
+        {
+            Vector3[] vertsSideOne = new Vector3[]
+            {
+                new Vector3(pointOne.x, pointOne.y, pointOne.z),
+                new Vector3(pointOne.x, pointTwo.y, pointOne.z),
+                new Vector3(pointTwo.x, pointTwo.y, pointOne.z),
+                new Vector3(pointTwo.x, pointOne.y, pointOne.z),
+            };
+
+            Vector3[] vertsSideTwo = new Vector3[]
+            {
+                new Vector3(pointOne.x, pointOne.y, pointTwo.z),
+                new Vector3(pointOne.x, pointTwo.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointTwo.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointOne.y, pointTwo.z),
+            };
+
+            Vector3[] vertsSideThree = new Vector3[]
+            {
+                new Vector3(pointOne.x, pointOne.y, pointOne.z),
+                new Vector3(pointOne.x, pointOne.y, pointTwo.z),
+                new Vector3(pointOne.x, pointTwo.y, pointTwo.z),
+                new Vector3(pointOne.x, pointTwo.y, pointOne.z),
+            };
+
+            Vector3[] vertsSideFour = new Vector3[]
+            {
+                new Vector3(pointTwo.x, pointOne.y, pointOne.z),
+                new Vector3(pointTwo.x, pointOne.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointTwo.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointTwo.y, pointOne.z),
+            };
+
+            Vector3[] vertsSideFive = new Vector3[]
+            {
+                new Vector3(pointOne.x, pointOne.y, pointOne.z),
+                new Vector3(pointOne.x, pointOne.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointOne.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointOne.y, pointOne.z),
+            };
+
+            Vector3[] vertsSideSix = new Vector3[]
+            {
+                new Vector3(pointOne.x, pointTwo.y, pointOne.z),
+                new Vector3(pointOne.x, pointTwo.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointTwo.y, pointTwo.z),
+                new Vector3(pointTwo.x, pointTwo.y, pointOne.z),
+            };
+
+            Handles.DrawSolidRectangleWithOutline(vertsSideOne, color, new Color(color.r,color.g, color.b, 1));
+            Handles.DrawSolidRectangleWithOutline(vertsSideTwo, color, new Color(color.r, color.g, color.b, 1));
+            Handles.DrawSolidRectangleWithOutline(vertsSideThree, color, new Color(color.r, color.g, color.b, 1));
+            Handles.DrawSolidRectangleWithOutline(vertsSideFour, color, new Color(color.r, color.g, color.b, 1));
+            Handles.DrawSolidRectangleWithOutline(vertsSideFive, color, new Color(color.r, color.g, color.b, 1));
+            Handles.DrawSolidRectangleWithOutline(vertsSideSix, color, new Color(color.r, color.g, color.b, 1));
+
+        }
+
+        void drawPath()
+        {
+            rightValue = 0;
+
+            for (int k = 0; k < ChosenPlayersData.Count; k++)
+            {
+                var playerData = ChosenPlayersData[k];
+        
+                Handles.color = colors[(k + 3) % colors.Length];
+
                 Handles.CubeHandleCap(
                 0,
                 playerData.trackedPositions[0].trackedPosition,
@@ -103,18 +221,34 @@ namespace PlaytestingTool
                 1f,
                 EventType.Repaint);
 
+                if(rightValue < playerData.trackedPositions.Count)
+                {
+                    rightValue = playerData.trackedPositions.Count;
+
+                }
+
                 for (int i = 0; i < playerData.trackedPositions.Count; i++)
                 {
                     if (i > 0 && i < playerData.trackedPositions.Count)
                     {
-                        Handles.DrawLine(playerData.trackedPositions[i - 1].trackedPosition, 
+                        Handles.DrawLine(playerData.trackedPositions[i - 1].trackedPosition,
                             playerData.trackedPositions[i].trackedPosition, 10);
                     }
+                        
+                    if (i == hSliderValue)
+                    {
+
+                        Handles.CubeHandleCap(0,
+                            playerData.trackedPositions[i].trackedPosition,
+                            Quaternion.LookRotation(Vector3.up),
+                            1f,
+                            EventType.Repaint);
+                    };
                 }
 
                 Handles.CubeHandleCap(
                 0,
-                playerData.trackedPositions[playerData.trackedPositions.Count-1].trackedPosition,
+                playerData.trackedPositions[playerData.trackedPositions.Count - 1].trackedPosition,
                 Quaternion.LookRotation(Vector3.up),
                 1f,
                 EventType.Repaint);
@@ -151,8 +285,28 @@ namespace PlaytestingTool
                     choices.Add(Path.GetFileName(file));
                     PlayersData.Add(playerDataTemp);
                 }
+
+
             }
+        }
+
+        void Reset()
+        {
+            areaPoints = new List<AreaPoints>() { new AreaPoints() };
+
         }
     }
 
+    [System.Serializable]
+    public class AreaPoints
+    {
+        [SerializeField]
+        public Vector3 pointOne;
+
+        [SerializeField]
+        public Vector3 pointTwo;
+
+        [SerializeField]
+        public Color color = new Color(0.5f, 0.5f, 0.5f, 0.1f);
+    }
 }

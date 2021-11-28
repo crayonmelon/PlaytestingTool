@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace PlaytestingTool
 {
@@ -9,6 +10,26 @@ namespace PlaytestingTool
     {
         public static void SavePlayerDatJson(PlayerData playerData, string fileName)
         {
+
+            FileStream fs = new FileStream($"./Assets/PlayerData/{fileName}.dat", FileMode.Create);
+            BinaryFormatter formatter = new BinaryFormatter();
+            //Binary 
+            try
+            {
+                formatter.Serialize(fs, playerData);
+            } 
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+
+            //JSON
             try
             {
                 string json = JsonUtility.ToJson(playerData, true);

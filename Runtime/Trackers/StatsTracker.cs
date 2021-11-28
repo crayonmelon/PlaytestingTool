@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StatsTracker : MonoBehaviour
 {
-    [SerializeReference] private string[] stats;
+    [SerializeReference] private Event stats;
 
     // Update is called once per frame
     void Update()

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace PlaytestingTool
 {
+    [System.Serializable]
     public class PlayerData
     {
         public List<TrackedPosition> trackedPositions;
@@ -29,6 +30,29 @@ namespace PlaytestingTool
         {
             this.userName = userName;
             this.feedBack = feedBack;
+        }
+    }
+
+    [System.Serializable]
+    public struct Vector3Data
+    {
+        public float x, y, z;
+
+        public Vector3Data(float rX, float rY, float rZ)
+        {
+            x = rX;
+            y = rY;
+            z = rZ;
+        }
+
+        public static implicit operator Vector3(Vector3Data rValue)
+        {
+            return new Vector3(rValue.x, rValue.y, rValue.z);
+        }
+
+        public static implicit operator Vector3Data(Vector3 rValue)
+        {
+            return new Vector3Data(rValue.x, rValue.y, rValue.z);
         }
     }
 }

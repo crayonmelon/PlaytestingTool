@@ -33,7 +33,7 @@ namespace PlaytestingTool
     }
 
     [System.Serializable]
-    public class TrackedPosition
+    public struct TrackedPosition
     {
         public Vector3Data trackedPosition;
         public float timeStamp;

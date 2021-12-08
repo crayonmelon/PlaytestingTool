@@ -7,9 +7,9 @@ namespace PlaytestingTool
     [System.Serializable]
     public class PlayerData
     {
-        public List<TrackedPosition> trackedPositions;
         public string SceneName;
         public string UniqueID;
+        public List<TrackedPosition> trackedPositions;
         public List<PlayerInfo> PlayerInfo;
 
         public PlayerData()

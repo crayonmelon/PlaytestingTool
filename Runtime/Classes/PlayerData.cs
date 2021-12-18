@@ -10,11 +10,12 @@ namespace PlaytestingTool
         public string SceneName;
         public string UniqueID;
         public List<TrackedPosition> trackedPositions;
+        public List<TrackedProgression> trackedProgressions;
         public List<PlayerInfo> PlayerInfo;
-
         public PlayerData()
         {
             trackedPositions = new List<TrackedPosition>();
+            trackedProgressions = new List<TrackedProgression>();
             PlayerInfo = new List<PlayerInfo>();
             SceneName = "not specified";
         }
@@ -53,6 +54,19 @@ namespace PlaytestingTool
         public static implicit operator Vector3Data(Vector3 rValue)
         {
             return new Vector3Data(rValue.x, rValue.y, rValue.z);
+        }
+    }
+
+    [System.Serializable]
+    public struct TrackedProgression
+    {
+        public float timeStamp;
+        public string eventName;
+
+        public TrackedProgression(string eventName, float timeStamp)
+        {
+            this.eventName = eventName;
+            this.timeStamp = timeStamp;
         }
     }
 }

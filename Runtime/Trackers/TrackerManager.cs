@@ -24,5 +24,10 @@ namespace PlaytestingTool {
             //Destroy playerData after save - this might be a bad idea but it also might fix my problems
             playerData = new PlayerData();
         }
+
+        internal static void SaveProgress(TrackedProgression trackedProgression)
+        {
+            playerData.trackedProgressions.Add(trackedProgression);
+        }
     }
 }

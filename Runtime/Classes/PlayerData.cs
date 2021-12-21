@@ -9,14 +9,14 @@ namespace PlaytestingTool
     {
         public string SceneName;
         public string UniqueID;
+        public string PlayerName;
         public List<TrackedPosition> trackedPositions;
-        public List<TrackedProgression> trackedProgressions;
-        public List<PlayerInfo> PlayerInfo;
+        public List<TrackedProgressionEvent> trackedProgressions;
+        public List<TrackedStatChange> trackedStatChanges;
         public PlayerData()
         {
             trackedPositions = new List<TrackedPosition>();
-            trackedProgressions = new List<TrackedProgression>();
-            PlayerInfo = new List<PlayerInfo>();
+            trackedProgressions = new List<TrackedProgressionEvent>();
             SceneName = "not specified";
         }
     }
@@ -58,15 +58,41 @@ namespace PlaytestingTool
     }
 
     [System.Serializable]
-    public struct TrackedProgression
+    public struct TrackedProgressionEvent
     {
         public float timeStamp;
         public string eventName;
+        public string value;
 
-        public TrackedProgression(string eventName, float timeStamp)
+        public TrackedProgressionEvent(string eventName, float timeStamp, object value)
         {
             this.eventName = eventName;
             this.timeStamp = timeStamp;
+            this.value = value.ToString();
+        }
+
+        public TrackedProgressionEvent(string eventName, float timeStamp)
+        {
+            this.eventName = eventName;
+            this.timeStamp = timeStamp;
+            this.value = null;
+        }
+    }
+
+    [System.Serializable]
+    public struct TrackedStatChange
+    {
+        public float timeStamp;
+        public float statName;
+        public float maxValue;
+        public float value;
+
+        public TrackedStatChange(float timeStamp, float statName, float maxValue, float value)
+        {
+            this.timeStamp = timeStamp;
+            this.statName = statName;
+            this.maxValue = maxValue;
+            this.value = value;
         }
     }
 }

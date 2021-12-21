@@ -8,13 +8,12 @@ namespace PlaytestingTool {
     {
         [HideInInspector]
         public static PlayerData playerData = new PlayerData();
-        private PlayerInfo playerInfo;
 
         private void Awake()
         {
             playerData.UniqueID = System.Guid.NewGuid().ToString();
             playerData.SceneName = SceneManager.GetActiveScene().name;
-        
+            playerData.PlayerName = $"Player-{playerData.UniqueID.Substring(0, 4)}";
         }
 
         internal static void Save()
@@ -25,9 +24,14 @@ namespace PlaytestingTool {
             playerData = new PlayerData();
         }
 
-        internal static void SaveProgress(TrackedProgression trackedProgression)
+        internal static void SaveProgress(TrackedProgressionEvent trackedProgression)
         {
             playerData.trackedProgressions.Add(trackedProgression);
+        }
+
+        internal static void SaveStat(TrackedStatChange trackedStatChange)
+        {
+            playerData.trackedStatChanges.Add(trackedStatChange);
         }
     }
 }

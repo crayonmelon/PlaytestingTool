@@ -18,7 +18,7 @@ namespace PlaytestingTool {
 
         internal static void Save()
         {
-            JsonManager.SavePlayerDatJson(playerData, playerData.UniqueID);
+            PlaySessionDataManager.SavePlayerDatJson(playerData, playerData.PlayerName);
 
             //Destroy playerData after save - this might be a bad idea but it also might fix my problems
             playerData = new PlayerData();

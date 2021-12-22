@@ -5,15 +5,12 @@ using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using System.Linq;
-using PlaytestingTool;
 
 namespace PlaytestingTool
 {
-    public class VisualizeMovementEditor : EditorWindow
+    public class VisualizerWindow : EditorWindow
     {
-        public List<PlayerData> PlayersData = new List<PlayerData>();
         public List<PlayerData> ChosenPlayersData = new List<PlayerData>();
-
         public List<string> areasWithin = new List<string>();
         private string areaBreakdownText;
 
@@ -52,7 +49,7 @@ namespace PlaytestingTool
         SerializedObject so;
 
         [MenuItem("Tools/Visualizers/VisualizeMovement")]
-        static void Init() => GetWindow<VisualizeMovementEditor>("Data Visualizer");
+        static void Init() => GetWindow<VisualizerWindow>("Data Visualizer");
 
         void InitStyle()
         {
@@ -82,7 +79,8 @@ namespace PlaytestingTool
 
             Selection.selectionChanged += Repaint;
             SceneView.duringSceneGui += this.DuringSceneGUI;
-            EditorSceneManager.sceneOpened += SceneChange; 
+            EditorSceneManager.sceneOpened += SceneChange;
+            EditorApplication.playModeStateChanged += stateChanged;
         }
 
         void OnDisable()
@@ -91,6 +89,7 @@ namespace PlaytestingTool
             SceneView.duringSceneGui -= this.DuringSceneGUI;
             EditorSceneManager.sceneOpened -= SceneChange;
         }
+        
 
         public void OnGUI()
         {
@@ -98,7 +97,7 @@ namespace PlaytestingTool
 
             GUILayout.Label("Choose Player Data:");
 
-            if (choices.Count > 1)
+            if (choices.Count >= 1)
             {
                 dataFlags = EditorGUILayout.MaskField("Player Data", dataFlags, choices.ToArray());
                 if (GUILayout.Button("Select"))
@@ -109,13 +108,13 @@ namespace PlaytestingTool
 
             GUILayout.Label($"You are in scene: {SceneName}", EditorStyles.boldLabel);
 
-            DrawUILine(Color.grey);
+            DrawLib.DrawUILine(Color.grey);
 
             drawPaths = GUILayout.Toggle(drawPaths, "Draw Player Paths");
 
             if (drawPaths)
             {
-                DrawUILine(Color.grey);
+                DrawLib.DrawUILine(Color.grey);
 
                 GUILayout.Label("Timeline");
                 TimelineValue = Mathf.RoundToInt(GUILayout.HorizontalSlider(TimelineValue, 0, MaxTime));
@@ -127,7 +126,7 @@ namespace PlaytestingTool
 
             if (drawAreas)
             {
-                DrawUILine(Color.grey);
+                DrawLib.DrawUILine(Color.grey);
 
                 GUILayout.Label(" ");
                 EditorGUILayout.PropertyField(propAreaPoints);
@@ -145,30 +144,6 @@ namespace PlaytestingTool
             GUILayout.EndScrollView();
         }
 
-        public static void DrawUILine(Color color, int thickness = 2, int padding = 10)
-        {
-            Rect r = EditorGUILayout.GetControlRect(GUILayout.Height(padding + thickness));
-            r.height = thickness;
-            r.y += padding / 2;
-            r.x -= 2;
-            r.width += 6;
-            EditorGUI.DrawRect(r, color);
-        }
-
-
-        void ChosenPlayerData()
-        {
-            ChosenPlayersData.Clear();
-
-            for (int i = 0; i < PlayersData.Count; i++)
-            {
-                if ((dataFlags & (1 << i)) == (1 << i)) ChosenPlayersData.Add(PlayersData[i]);
-            }
-
-            SceneView.RepaintAll();
-        }
-
-
         void CheckAreaBoundsButton()
         {
             areaBreakdownText = "";
@@ -177,7 +152,7 @@ namespace PlaytestingTool
                 Dictionary<string, int> areasBound = CalculationLib.ContainsVectors(playerdata.trackedPositions, areaPoints);
                 foreach (var item in areasBound)
                 {
-                    areaBreakdownText = $"{ playerdata.UniqueID} \n In area: {item.Key} Count: {item.Value} \n \n {areaBreakdownText}";
+                    areaBreakdownText = $"{ playerdata.PlayerName} \n In area: {item.Key} Count: {item.Value} \n \n {areaBreakdownText}";
                 }
             }
         }
@@ -193,34 +168,63 @@ namespace PlaytestingTool
 
             SceneView.RepaintAll();
         }
+
         void SceneChange(Scene scene, OpenSceneMode mode)
         {
             SceneName = scene.name;
             GetPlayersData();
         }
 
+        void ChosenPlayerData()
+        {
+            ChosenPlayersData.Clear();
+
+            for (int i = 0; i < choices.Count; i++)
+            {
+                if ((dataFlags & (1 << i)) == (1 << i))
+                {
+                    Debug.Log(choices[i]);
+                    //    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson(Path.GetFileName(file));
+                    string[] allFiles = Directory.GetFiles($"./Assets/PlayerData/{choices[i]}/", "*.json");
+
+                    foreach (string file in allFiles)
+                    {
+                        PlayerData playerDataTemp;
+
+                        file.Contains(SceneName);
+                        playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{choices[i]}/{Path.GetFileName(file)}");
+
+                        if (playerDataTemp.SceneName == SceneName)
+                        {
+                            ChosenPlayersData.Add(playerDataTemp);
+                        }
+                    }
+                }
+            }
+
+            SceneView.RepaintAll();
+        }
+
         void GetPlayersData()
         {
-            PlayerData playerDataTemp;
             string path = "./Assets/PlayerData/";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-            string[] allFiles = Directory.GetFiles("./Assets/PlayerData", "*.json");
-
-            PlayersData.Clear();
+            
+            string[] allDir = Directory.GetDirectories(path);
             ChosenPlayersData.Clear();
             choices.Clear();
 
-            foreach (string file in allFiles)
+            foreach (string dir in allDir)
             {
-                file.Contains(SceneName);
-                playerDataTemp = JsonManager.LoadPlayerDataJson(Path.GetFileName(file));
+                choices.Add(new DirectoryInfo(dir).Name);
+            }
+        }
 
-                if(playerDataTemp.SceneName == SceneName)
-                {
-                    choices.Add(Path.GetFileName(file));
-                    PlayersData.Add(playerDataTemp);
-                }
+        void stateChanged(PlayModeStateChange state)
+        {
+            if(state == PlayModeStateChange.EnteredEditMode)
+            {
+                GetPlayersData();
             }
         }
     }

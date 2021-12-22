@@ -6,33 +6,35 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace PlaytestingTool
 {
-    public class JsonManager
+    public class PlaySessionDataManager
     {
         public static void SavePlayerDatJson(PlayerData playerData, string fileName)
         {
+            string folderName = $"{DateTime.Now:dd-MM-yy HH.mm.ss} PlaySession";
+            Debug.Log(folderName);
 
-            FileStream fs = new FileStream($"./Assets/PlayerData/{fileName}.dat", FileMode.Create);
-            BinaryFormatter formatter = new BinaryFormatter();
-            //Binary 
-            try
-            {
-                formatter.Serialize(fs, playerData);
-            } 
-            catch (Exception e)
-            {
-                Debug.LogError(e.Message);
+            //FileStream fs = new FileStream($"./Assets/PlayerData/{folderName}/{fileName}.dat", FileMode.Create);
+            //BinaryFormatter formatter = new BinaryFormatter();
+            ////Binary 
+            //try
+            //{
+            //    formatter.Serialize(fs, playerData);
+            //} 
+            //catch (Exception e)
+            //{
+            //    Debug.LogError(e.Message);
 
-            }
-            finally
-            {
-                fs.Close();
-            }
+            //}
+            //finally
+            //{
+            //    fs.Close();
+            //}
 
             //JSON
             try
             {
                 string json = JsonUtility.ToJson(playerData, true);
-                string path = "./Assets/PlayerData/";
+                string path = $"./Assets/PlayerData/{folderName}/";
                 string file = $"PlayerData {fileName}.json";
                
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);

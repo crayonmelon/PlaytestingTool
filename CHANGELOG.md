@@ -2,6 +2,24 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
+## [0.0.4] - 21-12-2021
+
+### Added
+- added progression event tracking
+    - eg. abilty to rack events like level up, level complete, etc. 
+    - ![image](https://user-images.githubusercontent.com/11542929/147139415-d2bd9836-979b-4e86-ad35-b0623ce67202.png)
+
+### Changes 
+- recorded data is now stored in seperated folders
+- ![image](https://user-images.githubusercontent.com/11542929/147139260-14cf9529-0b61-4f2e-a828-a1b9957bc0f2.png)
+
+
+### fixes
+- data is updated at the end of a play session
+
+### In progress
+- stats tracker
+- Area data being added to json
 
 ## [0.0.3] - 08-12-2021
 

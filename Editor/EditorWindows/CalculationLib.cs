@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace PlaytestingTool
 {
@@ -42,13 +43,22 @@ namespace PlaytestingTool
         public Vector3 pointTwo;
 
         [SerializeField]
-        public Color color = new Color(0.5f, 0.5f, 0.5f, 1f);
+        public Color color;
 
         [SerializeField]
-        public string name = "";
+        public string name;
 
         [System.NonSerialized]
         public Bounds areaBounds;
+
+        public AreaPoints(Vector3 pointOne, Vector3 pointTwo, Color color, string name, Bounds areaBounds)
+        {
+            this.pointOne = pointOne;
+            this.pointTwo = pointTwo;
+            this.color = color;
+            this.name = name ?? throw new ArgumentNullException(nameof(name));
+            this.areaBounds = areaBounds;
+        }
     }
 }
 

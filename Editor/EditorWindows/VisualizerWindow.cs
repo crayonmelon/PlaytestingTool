@@ -10,8 +10,8 @@ namespace PlaytestingTool
 {
     public class VisualizerWindow : EditorWindow
     {
-        public List<PlayerData> ChosenPlayersData = new List<PlayerData>();
-        public List<string> areasWithin = new List<string>();
+        public List<PlayerData> ChosenPlayersData;
+        public List<string> areasWithin;
         private string areaBreakdownText;
 
         bool StyleNotSet = true;
@@ -21,7 +21,7 @@ namespace PlaytestingTool
         // -- GUI VARIABLES --
 
         //data selected
-        public List<string> choices = new List<string>();
+        public List<string> choices;
 
         int dataFlags = 0;
 
@@ -44,7 +44,6 @@ namespace PlaytestingTool
         //
         Vector2 PosOverFlow;
         Vector2 GUIOverflow;
-
 
         SerializedObject so;
 
@@ -71,16 +70,19 @@ namespace PlaytestingTool
 
         void OnEnable()
         {
+
             so = new SerializedObject(this);
             propAreaPoints = so.FindProperty("areaPoints");
             SceneName = EditorSceneManager.GetActiveScene().name;
             GetPlayersData();
-            ChosenPlayerData();
+            SetChosenPlayerData();
 
             Selection.selectionChanged += Repaint;
             SceneView.duringSceneGui += this.DuringSceneGUI;
             EditorSceneManager.sceneOpened += SceneChange;
             EditorApplication.playModeStateChanged += stateChanged;
+
+
         }
 
         void OnDisable()
@@ -89,7 +91,6 @@ namespace PlaytestingTool
             SceneView.duringSceneGui -= this.DuringSceneGUI;
             EditorSceneManager.sceneOpened -= SceneChange;
         }
-        
 
         public void OnGUI()
         {
@@ -101,7 +102,7 @@ namespace PlaytestingTool
             {
                 dataFlags = EditorGUILayout.MaskField("Player Data", dataFlags, choices.ToArray());
                 if (GUILayout.Button("Select"))
-                    ChosenPlayerData();
+                    SetChosenPlayerData();
             }
             else
                 GUILayout.Label("No Data Collected Yet");
@@ -126,6 +127,9 @@ namespace PlaytestingTool
 
             if (drawAreas)
             {
+                if (areaPoints.Count == 0)
+                    areaPoints.Add(new AreaPoints(new Vector3(10, 10, 10), new Vector3(0, 0, 0), new Color(1, 1, 1, 1), "Area_One", new Bounds(new Vector3(5, 5, 5), new Vector3(5, 5, 5))));
+
                 DrawLib.DrawUILine(Color.grey);
 
                 GUILayout.Label(" ");
@@ -175,7 +179,7 @@ namespace PlaytestingTool
             GetPlayersData();
         }
 
-        void ChosenPlayerData()
+        void SetChosenPlayerData()
         {
             ChosenPlayersData.Clear();
 

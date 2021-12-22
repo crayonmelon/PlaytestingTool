@@ -10,8 +10,8 @@ namespace PlaytestingTool
 {
     public class VisualizerWindow : EditorWindow
     {
-        public List<PlayerData> ChosenPlayersData;
-        public List<string> areasWithin;
+        public List<PlayerData> ChosenPlayersData = new List<PlayerData>();
+        public List<string> areasWithin = new List<string>();
         private string areaBreakdownText;
 
         bool StyleNotSet = true;
@@ -21,7 +21,7 @@ namespace PlaytestingTool
         // -- GUI VARIABLES --
 
         //data selected
-        public List<string> choices;
+        public List<string> choices = new List<string>();
 
         int dataFlags = 0;
 

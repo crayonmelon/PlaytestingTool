@@ -166,7 +166,21 @@ namespace PlaytestingTool
             if (StyleNotSet) InitStyle();
             
             if(drawPaths)
+            {
+                for (int k = 0; k < ChosenPlayersData.Count; k++)
+                {
+                    var playerData = ChosenPlayersData[k];
+                    if (MaxTime < playerData.trackedPositions.Count)
+                    {
+                        MaxTime = playerData.trackedPositions.Count;
+                    }
+                }
+                    
+                
                 DrawLib.drawPath(MaxTime, TimelineValue, ChosenPlayersData);
+                
+            }
+
             if(drawAreas)
                 DrawLib.DrawAreas(areaPoints, so);
 
@@ -220,7 +234,22 @@ namespace PlaytestingTool
 
             foreach (string dir in allDir)
             {
-                choices.Add(new DirectoryInfo(dir).Name);
+                string LevelName = new DirectoryInfo(dir).Name;
+                string[] allFiles = Directory.GetFiles($"./Assets/PlayerData/{LevelName}/", "*.json");
+
+
+                foreach (string file in allFiles)
+                {
+                    PlayerData playerDataTemp;
+
+                    file.Contains(SceneName);
+                    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{LevelName}/{Path.GetFileName(file)}");
+
+                    if (playerDataTemp.SceneName == SceneName)
+                    {
+                        choices.Add(LevelName);
+                    }
+                }
             }
         }
 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-
 namespace PlaytestingTool
 {
     /// <summary>
@@ -27,7 +26,6 @@ namespace PlaytestingTool
             {
                 areaPoints[i].pointOne = Handles.PositionHandle(areaPoints[i].pointOne, Quaternion.identity);
                 areaPoints[i].pointTwo = Handles.PositionHandle(areaPoints[i].pointTwo, Quaternion.identity);
-
 
                 Vector3 CenterVector = Vector3.Lerp(areaPoints[i].pointOne, areaPoints[i].pointTwo, 0.5f);
                 Vector3 size = new Vector3(Mathf.Abs(areaPoints[i].pointOne.x - areaPoints[i].pointTwo.x), Mathf.Abs(areaPoints[i].pointOne.y - areaPoints[i].pointTwo.y), Mathf.Abs(areaPoints[i].pointOne.z - areaPoints[i].pointTwo.z));
@@ -56,6 +54,11 @@ namespace PlaytestingTool
             {
                 var playerData = chosenPlayersData[k];
 
+                if(playerData.trackedPositions == null || playerData.trackedPositions.Count == 0)
+                {
+                    continue;
+                }
+
                 Handles.color = colors[(k + 3) % colors.Length];
 
                 Handles.CubeHandleCap(
@@ -75,19 +78,34 @@ namespace PlaytestingTool
                 {
                     if (i > 0 && i < playerData.trackedPositions.Count)
                     {
-                        Handles.DrawLine(playerData.trackedPositions[i - 1].trackedPosition,
-                            playerData.trackedPositions[i].trackedPosition, 10);
+                        Handles.DrawAAPolyLine(playerData.trackedPositions[i - 1].trackedPosition,
+                            playerData.trackedPositions[i].trackedPosition);
                     }
 
                     if (i == hSliderValue)
                     {
-
                         Handles.CubeHandleCap(0,
                             playerData.trackedPositions[i].trackedPosition,
                             Quaternion.LookRotation(Vector3.up),
                             1f,
                             EventType.Repaint);
                     };
+
+                    foreach (var progression in playerData.trackedProgressions)
+                    {
+                        if (progression.timeStamp > playerData.trackedPositions[i].timeStamp && progression.timeStamp < playerData.trackedPositions[i+1].timeStamp)
+                        {
+                            Handles.SphereHandleCap(
+                            0,
+                            playerData.trackedPositions[i].trackedPosition,
+                            Quaternion.LookRotation(Vector3.up),
+                            1f,
+                            EventType.Repaint);
+
+                            Handles.Label( playerData.trackedPositions[i].trackedPosition + Vector3.up*2, progression.eventName, GUI.skin.button.alignment);
+                        }
+                    }
+          
                 }
 
                 Handles.CubeHandleCap(

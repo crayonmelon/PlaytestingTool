@@ -70,7 +70,6 @@ namespace PlaytestingTool
 
         void OnEnable()
         {
-
             so = new SerializedObject(this);
             propAreaPoints = so.FindProperty("areaPoints");
             SceneName = EditorSceneManager.GetActiveScene().name;
@@ -81,8 +80,6 @@ namespace PlaytestingTool
             SceneView.duringSceneGui += this.DuringSceneGUI;
             EditorSceneManager.sceneOpened += SceneChange;
             EditorApplication.playModeStateChanged += stateChanged;
-
-
         }
 
         void OnDisable()
@@ -144,7 +141,6 @@ namespace PlaytestingTool
 
                 GUILayout.EndScrollView();
             }
-
             GUILayout.EndScrollView();
         }
 

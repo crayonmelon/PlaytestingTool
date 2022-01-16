@@ -102,7 +102,7 @@ namespace PlaytestingTool
                             1f,
                             EventType.Repaint);
 
-                            Handles.Label( playerData.trackedPositions[i].trackedPosition + Vector3.up*2, progression.eventName, GUI.skin.button.alignment);
+                            Handles.Label( playerData.trackedPositions[i].trackedPosition + Vector3.up*2, progression.eventName);
                         }
                     }
           

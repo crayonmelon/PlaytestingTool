@@ -10,7 +10,12 @@ namespace PlaytestingTool
 {
     public class HeatMapWindow : EditorWindow
     {
-        public List<PlayerData> ChosenPlayersData = new List<PlayerData>();
+        public List<PlayerData> AllPlayersData = new List<PlayerData>();
+
+        private List<PlayerData> ChosenPlayersData = new List<PlayerData>();
+        private List<TrackedProgressionEvent> trackedProgressionEvents = new List<TrackedProgressionEvent>();
+        private List<TrackedProgressionEvent> chosenTrackedProgression = new List<TrackedProgressionEvent>();
+
 
         //data selected
         public List<string> choices = new List<string>();
@@ -22,12 +27,12 @@ namespace PlaytestingTool
 
         void OnEnable()
         {
+            GetPlayersData();
+
             SceneView.duringSceneGui += this.DuringSceneGUI;
             Selection.selectionChanged += Repaint;
 
             SceneName = EditorSceneManager.GetActiveScene().name;
-            GetPlayersData();
-            SetChosenPlayerData();
         }
 
         void OnDisable()
@@ -43,8 +48,8 @@ namespace PlaytestingTool
             if (choices.Count >= 1)
             {
                 dataFlags = EditorGUILayout.MaskField("Player Data", dataFlags, choices.ToArray());
-                //if (GUILayout.Button("Select"))
-                //    SetChosenPlayerData();
+                if (GUILayout.Button("Select"))
+                    SetChosenProgressData();
             }
             else
                 GUILayout.Label("No Data Collected Yet");
@@ -62,57 +67,78 @@ namespace PlaytestingTool
 
             string[] allDir = Directory.GetDirectories(path);
             ChosenPlayersData.Clear();
-            choices.Clear();
+            AllPlayersData.Clear();
 
             foreach (string dir in allDir)
             {
                 string LevelName = new DirectoryInfo(dir).Name;
                 string[] allFiles = Directory.GetFiles($"./Assets/PlayerData/{LevelName}/", "*.json");
 
+                Debug.Log($"size: {allFiles.Length}");
 
                 foreach (string file in allFiles)
                 {
                     PlayerData playerDataTemp;
-
-                    file.Contains(SceneName);
                     playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{LevelName}/{Path.GetFileName(file)}");
+                    AllPlayersData.Add(playerDataTemp);
+                    Debug.Log("Data: " + playerDataTemp);
 
-                    if (playerDataTemp.SceneName == SceneName)
+                }
+            }
+            Debug.Log($"All Data Size {AllPlayersData.Count} ");
+            SetProgressChoices();
+        }
+
+        void SetProgressChoices()
+        {
+            choices.Clear();
+
+            foreach (var playerData in AllPlayersData)
+            {
+                foreach (var progression in playerData.trackedProgressions)
+                {
+                    Debug.Log($"{progression} who is joe?");
+                    trackedProgressionEvents.Add(progression);
+
+                    if (!choices.Contains(progression.eventName))
                     {
-                        choices.Add(LevelName);
+                        choices.Add(progression.eventName);
                     }
                 }
             }
         }
 
-        void SetChosenPlayerData()
+        void SetChosenProgressData()
         {
             ChosenPlayersData.Clear();
+            chosenTrackedProgression.Clear();
 
             for (int i = 0; i < choices.Count; i++)
             {
                 if ((dataFlags & (1 << i)) == (1 << i))
                 {
                     Debug.Log(choices[i]);
-                    //    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson(Path.GetFileName(file));
-                    string[] allFiles = Directory.GetFiles($"./Assets/PlayerData/{choices[i]}/", "*.json");
 
-                    foreach (string file in allFiles)
+                    foreach (var item in trackedProgressionEvents)
                     {
-                        PlayerData playerDataTemp;
-
-                        file.Contains(SceneName);
-                        playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{choices[i]}/{Path.GetFileName(file)}");
-
-                        if (playerDataTemp.SceneName == SceneName)
+                        if (choices[i] == item.eventName)
                         {
-                            ChosenPlayersData.Add(playerDataTemp);
+                            chosenTrackedProgression.Add(item);
+
                         }
                     }
                 }
             }
 
-            SceneView.RepaintAll();
+            DrawHeatMap();
+        }
+
+        void DrawHeatMap()
+        {
+            foreach (var item in chosenTrackedProgression)
+            {
+                Debug.Log($"Time: {item.eventName} at {item.eventName}");
+            }
         }
 
     }

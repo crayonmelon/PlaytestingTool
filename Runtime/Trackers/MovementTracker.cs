@@ -9,7 +9,7 @@ namespace PlaytestingTool
     public class MovementTracker : MonoBehaviour
     {
         [SerializeField] private Transform tracking;
-        [SerializeField] private float stepCount;
+        [SerializeField] private float stepCount = 0.1f;
         private List<TrackedPosition> trackedPosition = new List<TrackedPosition>();
 
         void Awake()

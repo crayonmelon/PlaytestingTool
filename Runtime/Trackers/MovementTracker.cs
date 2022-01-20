@@ -5,12 +5,12 @@ using System;
 
 namespace PlaytestingTool
 {
-    [RequireComponent(typeof(TrackerManager)), AddComponentMenu("Playtesting/MovementTracker")]
+    [AddComponentMenu("Playtesting/MovementTracker")]
     public class MovementTracker : MonoBehaviour
     {
         [SerializeField] private Transform tracking;
         [SerializeField] private float stepCount;
-        private List<TrackedPosition> trackedPosition => TrackerManager.playerData.trackedPositions;
+        private List<TrackedPosition> trackedPosition = new List<TrackedPosition>();
 
         void Awake()
         {
@@ -29,7 +29,8 @@ namespace PlaytestingTool
             }
         }
 
-        private void OnDisable() => TrackerManager.Save();
+        private void OnDisable() => SaveData();
+        public void SaveData() => TrackerManager.SaveMovement(trackedPosition, tracking.name);
     }
 
     [System.Serializable]

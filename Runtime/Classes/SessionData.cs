@@ -9,14 +9,13 @@ namespace PlaytestingTool
     {
         public string SceneName;
         public string UniqueID;
-        public string PlayerName;
+        public string objectName;
+        public string sessionName;
         public List<TrackedPosition> trackedPositions;
         public List<TrackedProgressionEvent> trackedProgressions;
         public List<TrackedStatChange> trackedStatChanges;
         public SessionData()
         {
-            trackedPositions = new List<TrackedPosition>();
-            trackedProgressions = new List<TrackedProgressionEvent>();
             SceneName = "not specified";
         }
     }

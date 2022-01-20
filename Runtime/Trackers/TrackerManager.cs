@@ -6,33 +6,37 @@ using UnityEngine.SceneManagement;
 namespace PlaytestingTool { 
     public class TrackerManager : MonoBehaviour
     {
-        
         [HideInInspector]
-        public static SessionData playerData = new SessionData();
+        public static List<SessionData> playerData = new List<SessionData>();
+
+        [HideInInspector]
+        public static string sessionName;
 
         private void Awake()
         {
-            playerData.UniqueID = System.Guid.NewGuid().ToString();
-            playerData.SceneName = SceneManager.GetActiveScene().name;
-            playerData.PlayerName = $"Player-{playerData.UniqueID.Substring(0, 4)}";
+            DontDestroyOnLoad(this.gameObject);
+            sessionName = System.Guid.NewGuid().ToString();
         }
 
-        internal static void Save()
+        internal static void SaveMovement(List<TrackedPosition> trackedPosition, string objectName)
         {
-            PlaySessionDataManager.SavePlayerDatJson(playerData, playerData.PlayerName);
+            SessionData sessionData = new SessionData();
+            sessionData.trackedPositions = trackedPosition;
+            sessionData.objectName = objectName;
+            sessionData.sessionName = sessionName;
+            sessionData.SceneName = SceneManager.GetActiveScene().name;
 
-            //Destroy playerData after save - this might be a bad idea but it also might fix my problems
-            playerData = new SessionData();
+            PlaySessionDataManager.SavePlayerDatJson(sessionData);
         }
 
         internal static void SaveProgress(TrackedProgressionEvent trackedProgression)
         {
-            playerData.trackedProgressions.Add(trackedProgression);
+           //TODO playerData.trackedProgressions.Add(trackedProgression);
         }
 
         internal static void SaveStat(TrackedStatChange trackedStatChange)
         {
-            playerData.trackedStatChanges.Add(trackedStatChange);
+            //TODO playerData.trackedStatChanges.Add(trackedStatChange);
         }
     }
 }

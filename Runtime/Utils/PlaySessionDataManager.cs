@@ -3,14 +3,16 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections;
+using UnityEngine.Networking;
 
 namespace PlaytestingTool
 {
     public class PlaySessionDataManager
     {
-        public static void SavePlayerDatJson(SessionData playerData, string fileName)
+        public static void SavePlayerDatJson(SessionData sessionData)
         {
-            string folderName = $"{DateTime.Now:dd-MM-yy HH.mm.ss} PlaySession";
+            string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {sessionData.sessionName.Substring(0, 4)}";
             Debug.Log($"DATA CREATED <a href={folderName} line={folderName}</a>");
 
             //FileStream fs = new FileStream($"./Assets/SessionData/{folderName}/{fileName}.dat", FileMode.Create);
@@ -33,9 +35,9 @@ namespace PlaytestingTool
             //JSON
             try
             {
-                string json = JsonUtility.ToJson(playerData, true);
+                string json = JsonUtility.ToJson(sessionData, true);
                 string path = $"./Assets/SessionData/{folderName}/";
-                string file = $"SessionData {fileName}.json";
+                string file = $"SessionData {sessionData.objectName}.json";
                
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                 File.WriteAllText(path + file, json);
@@ -50,7 +52,7 @@ namespace PlaytestingTool
         {
             try
             {
-                string path = "./Assets/SessionData/";
+                string path = $"{Settings.FOLDERPATH }/ ";
 
                 string json = File.ReadAllText(path + fileName);
                 SessionData playerdata = new SessionData();
@@ -64,5 +66,22 @@ namespace PlaytestingTool
                 return null;
             }
         }
+
+        public static IEnumerator UploadData(string file)
+        {
+            byte[] myData = System.Text.Encoding.UTF8.GetBytes(file);
+            UnityWebRequest www = UnityWebRequest.Put("https://www.my-server.com/upload", myData);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Upload complete!");
+            }
+
+        } 
     }
 }

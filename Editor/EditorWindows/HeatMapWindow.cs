@@ -38,7 +38,7 @@ namespace PlaytestingTool
         void OnDisable()
         {
             Selection.selectionChanged -= Repaint;
-            SceneView.duringSceneGui -= this.DuringSceneGUI;
+            SceneView.duringSceneGui += this.DuringSceneGUI;
         }
 
         public void OnGUI()

@@ -152,7 +152,7 @@ namespace PlaytestingTool
                 Dictionary<string, int> areasBound = CalculationLib.ContainsVectors(playerdata.trackedPositions, areaPoints);
                 foreach (var item in areasBound)
                 {
-                    areaBreakdownText = $"{ playerdata.PlayerName} \n In area: {item.Key} Count: {item.Value} \n \n {areaBreakdownText}";
+                    areaBreakdownText = $"{ playerdata.objectName} \n In area: {item.Key} Count: {item.Value} \n \n {areaBreakdownText}";
                 }
             }
         }
@@ -197,7 +197,7 @@ namespace PlaytestingTool
                 {
                     Debug.Log(choices[i]);
                     //    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson(Path.GetFileName(file));
-                    string[] allFiles = Directory.GetFiles($"./Assets/SessionData/{choices[i]}/", "*.json");
+                    string[] allFiles = Directory.GetFiles($"{Settings.FOLDERPATH}/{choices[i]}/", "*.json");
 
                     foreach (string file in allFiles)
                     {
@@ -219,7 +219,7 @@ namespace PlaytestingTool
 
         void GetPlayersData()
         {
-            string path = "./Assets/SessionData/";
+            string path = $"{Settings.FOLDERPATH}/";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             
             string[] allDir = Directory.GetDirectories(path);
@@ -229,7 +229,7 @@ namespace PlaytestingTool
             foreach (string dir in allDir)
             {
                 string LevelName = new DirectoryInfo(dir).Name;
-                string[] allFiles = Directory.GetFiles($"./Assets/SessionData/{LevelName}/", "*.json");
+                string[] allFiles = Directory.GetFiles($"{Settings.FOLDERPATH}/{LevelName}/", "*.json");
 
 
                 foreach (string file in allFiles)

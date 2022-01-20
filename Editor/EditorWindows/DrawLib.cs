@@ -46,7 +46,7 @@ namespace PlaytestingTool
         /// <param name="rightValue"></param>
         /// <param name="hSliderValue"></param>
         /// <param name="chosenPlayersData"></param>
-        public static void drawPath(int rightValue,int hSliderValue, List<PlayerData> chosenPlayersData)
+        public static void drawPath(int rightValue,int hSliderValue, List<SessionData> chosenPlayersData)
         {
             rightValue = 0;
 

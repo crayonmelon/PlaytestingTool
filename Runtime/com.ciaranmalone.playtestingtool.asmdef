@@ -1,6 +1,6 @@
 {
     "name": "com.ciaranmalone.playtestingtool",
-    "rootNamespace": "",
+    "rootNamespace": "PlaytestingTool",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

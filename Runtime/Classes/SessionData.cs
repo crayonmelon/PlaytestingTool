@@ -5,7 +5,7 @@ using UnityEngine;
 namespace PlaytestingTool
 {
     [System.Serializable]
-    public class PlayerData
+    public class SessionData
     {
         public string SceneName;
         public string UniqueID;
@@ -13,7 +13,7 @@ namespace PlaytestingTool
         public List<TrackedPosition> trackedPositions;
         public List<TrackedProgressionEvent> trackedProgressions;
         public List<TrackedStatChange> trackedStatChanges;
-        public PlayerData()
+        public SessionData()
         {
             trackedPositions = new List<TrackedPosition>();
             trackedProgressions = new List<TrackedProgressionEvent>();

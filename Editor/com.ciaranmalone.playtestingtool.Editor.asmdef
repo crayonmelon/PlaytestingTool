@@ -1,6 +1,6 @@
 {
     "name": "com.ciaranmalone.playtestingtool.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "PlaytestingTool",
     "references": [
         "GUID:589b8001af1f6af4985b65870c5c7f79"
     ],

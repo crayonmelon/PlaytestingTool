@@ -10,7 +10,7 @@ namespace PlaytestingTool
 {
     public class VisualizerWindow : EditorWindow
     {
-        public List<PlayerData> ChosenPlayersData = new List<PlayerData>();
+        public List<SessionData> ChosenPlayersData = new List<SessionData>();
         public List<string> areasWithin = new List<string>();
         private string areaBreakdownText;
 
@@ -171,10 +171,8 @@ namespace PlaytestingTool
                         MaxTime = playerData.trackedPositions.Count;
                     }
                 }
-                    
                 
                 DrawLib.drawPath(MaxTime, TimelineValue, ChosenPlayersData);
-                
             }
 
             if(drawAreas)
@@ -199,11 +197,11 @@ namespace PlaytestingTool
                 {
                     Debug.Log(choices[i]);
                     //    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson(Path.GetFileName(file));
-                    string[] allFiles = Directory.GetFiles($"./Assets/PlayerData/{choices[i]}/", "*.json");
+                    string[] allFiles = Directory.GetFiles($"./Assets/SessionData/{choices[i]}/", "*.json");
 
                     foreach (string file in allFiles)
                     {
-                        PlayerData playerDataTemp;
+                        SessionData playerDataTemp;
 
                         file.Contains(SceneName);
                         playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{choices[i]}/{Path.GetFileName(file)}");
@@ -221,7 +219,7 @@ namespace PlaytestingTool
 
         void GetPlayersData()
         {
-            string path = "./Assets/PlayerData/";
+            string path = "./Assets/SessionData/";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             
             string[] allDir = Directory.GetDirectories(path);
@@ -231,16 +229,21 @@ namespace PlaytestingTool
             foreach (string dir in allDir)
             {
                 string LevelName = new DirectoryInfo(dir).Name;
-                string[] allFiles = Directory.GetFiles($"./Assets/PlayerData/{LevelName}/", "*.json");
+                string[] allFiles = Directory.GetFiles($"./Assets/SessionData/{LevelName}/", "*.json");
 
 
                 foreach (string file in allFiles)
                 {
-                    PlayerData playerDataTemp;
+                    SessionData playerDataTemp;
 
                     file.Contains(SceneName);
                     playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{LevelName}/{Path.GetFileName(file)}");
 
+                    if (playerDataTemp == null)
+                    {
+                        return;
+                    }
+                    
                     if (playerDataTemp.SceneName == SceneName)
                     {
                         choices.Add(LevelName);

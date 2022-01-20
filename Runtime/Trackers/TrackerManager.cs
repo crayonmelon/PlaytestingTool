@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 namespace PlaytestingTool { 
     public class TrackerManager : MonoBehaviour
     {
+        
         [HideInInspector]
-        public static PlayerData playerData = new PlayerData();
+        public static SessionData playerData = new SessionData();
 
         private void Awake()
         {
@@ -21,7 +22,7 @@ namespace PlaytestingTool {
             PlaySessionDataManager.SavePlayerDatJson(playerData, playerData.PlayerName);
 
             //Destroy playerData after save - this might be a bad idea but it also might fix my problems
-            playerData = new PlayerData();
+            playerData = new SessionData();
         }
 
         internal static void SaveProgress(TrackedProgressionEvent trackedProgression)

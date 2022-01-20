@@ -10,9 +10,9 @@ namespace PlaytestingTool
 {
     public class HeatMapWindow : EditorWindow
     {
-        public List<PlayerData> AllPlayersData = new List<PlayerData>();
+        public List<SessionData> AllPlayersData = new List<SessionData>();
 
-        private List<PlayerData> ChosenPlayersData = new List<PlayerData>();
+        private List<SessionData> ChosenPlayersData = new List<SessionData>();
         private List<TrackedProgressionEvent> trackedProgressionEvents = new List<TrackedProgressionEvent>();
         private List<TrackedProgressionEvent> chosenTrackedProgression = new List<TrackedProgressionEvent>();
 
@@ -78,7 +78,7 @@ namespace PlaytestingTool
 
                 foreach (string file in allFiles)
                 {
-                    PlayerData playerDataTemp;
+                    SessionData playerDataTemp;
                     playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{LevelName}/{Path.GetFileName(file)}");
                     AllPlayersData.Add(playerDataTemp);
                     Debug.Log("Data: " + playerDataTemp);
@@ -124,7 +124,6 @@ namespace PlaytestingTool
                         if (choices[i] == item.eventName)
                         {
                             chosenTrackedProgression.Add(item);
-
                         }
                     }
                 }

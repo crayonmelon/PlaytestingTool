@@ -8,12 +8,12 @@ namespace PlaytestingTool
 {
     public class PlaySessionDataManager
     {
-        public static void SavePlayerDatJson(PlayerData playerData, string fileName)
+        public static void SavePlayerDatJson(SessionData playerData, string fileName)
         {
             string folderName = $"{DateTime.Now:dd-MM-yy HH.mm.ss} PlaySession";
-            Debug.Log(folderName);
+            Debug.Log($"DATA CREATED <a href={folderName} line={folderName}</a>");
 
-            //FileStream fs = new FileStream($"./Assets/PlayerData/{folderName}/{fileName}.dat", FileMode.Create);
+            //FileStream fs = new FileStream($"./Assets/SessionData/{folderName}/{fileName}.dat", FileMode.Create);
             //BinaryFormatter formatter = new BinaryFormatter();
             ////Binary 
             //try
@@ -34,8 +34,8 @@ namespace PlaytestingTool
             try
             {
                 string json = JsonUtility.ToJson(playerData, true);
-                string path = $"./Assets/PlayerData/{folderName}/";
-                string file = $"PlayerData {fileName}.json";
+                string path = $"./Assets/SessionData/{folderName}/";
+                string file = $"SessionData {fileName}.json";
                
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                 File.WriteAllText(path + file, json);
@@ -46,24 +46,23 @@ namespace PlaytestingTool
             }
         }
 
-        public static PlayerData LoadPlayerDataJson(string fileName)
+        public static SessionData LoadPlayerDataJson(string fileName)
         {
             try
             {
-                string path = "./Assets/PlayerData/";
+                string path = "./Assets/SessionData/";
 
                 string json = File.ReadAllText(path + fileName);
-                PlayerData playerdata = new PlayerData();
+                SessionData playerdata = new SessionData();
                 JsonUtility.FromJsonOverwrite(json, playerdata);
 
                 return playerdata;
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
+                Debug.LogWarning($"No Data {e.Message}");
                 return null;
             }
-
         }
     }
 }

@@ -12,7 +12,7 @@ namespace PlaytestingTool
         public string objectName;
         public string sessionName;
         public List<TrackedPosition> trackedPositions;
-        public List<TrackedProgressionEvent> trackedProgressions;
+        public List<TrackedProgressionEvent> trackedProgressions = new List<TrackedProgressionEvent>();
         public List<TrackedStatChange> trackedStatChanges;
         public SessionData()
         {

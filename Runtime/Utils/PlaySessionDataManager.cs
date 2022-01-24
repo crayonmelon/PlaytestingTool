@@ -38,8 +38,13 @@ namespace PlaytestingTool
                 string json = JsonUtility.ToJson(sessionData, true);
                 string path = $"./Assets/SessionData/{folderName}/";
                 string file = $"SessionData {sessionData.objectName}.json";
-               
+                int fileCount = 0;
+
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+                //while (File.Exists(path + file))
+                //    file = $"SessionData {sessionData.objectName}_{fileCount++}.json";
+
                 File.WriteAllText(path + file, json);
             }
             catch (Exception e)

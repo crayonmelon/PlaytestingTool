@@ -25,7 +25,20 @@ namespace PlaytestingTool
             GUILayout.Label("Settings");
 
             Settings.FOLDERPATH = EditorGUILayout.TextField("Local Folder Path:", Settings.FOLDERPATH);
-            Settings.WEBENDPOINT = EditorGUILayout.TextField("Server Enpoint:", Settings.WEBENDPOINT);
+            Settings.UPLOADDATA = EditorGUILayout.Toggle("Upload Data", Settings.UPLOADDATA);
+
+            if (Settings.UPLOADDATA)
+            {
+                Settings.WEBENDPOINT = EditorGUILayout.TextField("Server Enpoint:", Settings.WEBENDPOINT);
+
+                if (GUILayout.Button("Upload Data"))
+                {
+                  //  SessionData sessionData = PlaySessionDataManager.LoadPlayerDataJson("24-01-22 PlaySession a5df/SessionData FPSController0.json");
+                    PlaySessionDataManager.UploadSessionData("24-01-22 PlaySession a5df/SessionData FPSController0.json");
+                }
+            }
+
+            Settings.ENABLE = EditorGUILayout.Toggle("Enable Saving", Settings.ENABLE);
 
             Debug.Log(Settings.FOLDERPATH);
         }

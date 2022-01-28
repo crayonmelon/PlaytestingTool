@@ -81,12 +81,11 @@ namespace PlaytestingTool {
 
         void OnApplicationQuit()
         {
-            Debug.Log("I hava ran");
-            Debug.Log("Count: " + SessionDataCollection.Count);
             foreach (var sessionData in SessionDataCollection)
             {
                 Debug.Log("New FileSaved "+ sessionData.objectName + "SceneName " + sessionData.sessionName);
                 PlaySessionDataManager.SavePlayerDatJson(sessionData);
+                StartCoroutine(PlaySessionDataManager.UploadData(sessionData));
             }
         }
     }

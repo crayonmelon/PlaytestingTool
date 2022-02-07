@@ -14,10 +14,17 @@ namespace PlaytestingTool
     {
         private const string V = "\result.zip";
 
+        /// <summary>
+        /// <para>Saves session data class locally in specified folder.</para>
+        /// <para>Data will be put in folder with timestamp of play session.</para>
+        /// <para>any other data from that play session will be saved in the same folder.</para>
+        /// <list type="bullet">enpoint is specified in the Tools Settings <c>Settings.FOLDERPATH</c></list>
+        /// </summary>
+        /// <param name="sessionData">The Session data you wish to save locally, it will be converted to Json</param>
         public static void SavePlayerDatJson(SessionData sessionData)
         {
             string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {sessionData.sessionName.Substring(0, 4)}";
-            Debug.Log($"DATA CREATED <a href={folderName} line={folderName}</a>");
+            Debug.Log($"DATA CREATED LOCALLY</a>");
 
             //FileStream fs = new FileStream($"./Assets/SessionData/{folderName}/{fileName}.dat", FileMode.Create);
             //BinaryFormatter formatter = new BinaryFormatter();
@@ -40,9 +47,10 @@ namespace PlaytestingTool
             try
             {
                 string json = JsonUtility.ToJson(sessionData, true);
-                string path = $"./Assets/SessionData/{folderName}/";
+                string path = $"{Settings.FOLDERPATH}/{folderName}/";
                 string file = $"SessionData {sessionData.objectName}.json";
-                int fileCount = 0;
+
+                Debug.Log(Settings.FOLDERPATH);
 
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
@@ -58,11 +66,14 @@ namespace PlaytestingTool
             }
         }
 
+        /// <summary>
+        /// <para>Load Data from Local repository</para>
+        /// <para>Folder the data is loaded from is specified in the Tools Settings <c>Settings.FOLDERPATH</c></para>
+        /// </summary>
+        /// <param name="fileName">name of the file that will be uploaded</param>
+        /// <returns>Deserialized SessionData class from local saved Json</returns>
         public static SessionData LoadPlayerDataJson(string fileName)
         {
-            Debug.Log($"Path {Settings.FOLDERPATH}{fileName}");
-
-            
             try
             {
                 string path = $"{Settings.FOLDERPATH}/";
@@ -79,38 +90,32 @@ namespace PlaytestingTool
             }
         }
 
-        public static IEnumerator UploadData(SessionData file)
+        /// <summary>
+        /// <para>Data will be uploaded in JSON form to the specified endpoint.</para>
+        /// <list type="bullet">enpoint is specified in the Tools Settings <c>Settings.FOLDERPATH</c></list>
+        /// </summary>
+        /// <param name="sessionData">The Session data you wish to upload, it will be converted to Json</param>
+        public static void UploadSessionData(SessionData sessionData)
         {
-            Debug.Log("we started!");
-            string json = JsonUtility.ToJson(file, true);
-
-            byte[] myData = System.Text.Encoding.UTF8.GetBytes(json);
-            UnityWebRequest www = UnityWebRequest.Put(Settings.WEBENDPOINT, myData);
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            try
             {
-                Debug.Log(www.error);
+                string json = JsonUtility.ToJson(sessionData, true);
+                string collectionName = $"{DateTime.Now:dd-MM-yy} PlaySession {sessionData.sessionName.Substring(0, 4)}";
+
+                WebClient myWebClient = new WebClient();
+                myWebClient.Encoding = System.Text.Encoding.UTF8;
+                myWebClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=utf-8");
+
+                string responseArray = myWebClient.UploadString($"{Settings.WEBENDPOINT}/{collectionName}", "POST", json);
+
+                Debug.Log($"Server Response: {responseArray}");
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Upload complete!");
+                Debug.LogError("Unable to connect");
+                Debug.LogError(e.Message);
             }
 
-        } 
-
-        public static void UploadSessionData(string filename)
-        {
-            string path = $"{Settings.FOLDERPATH}/";
-            string json = File.ReadAllText(path + filename);
-            Debug.Log(json);
-            WebClient myWebClient = new WebClient();
-            myWebClient.Encoding = System.Text.Encoding.UTF8;
-            myWebClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=utf-8");
-
-            string responseArray = myWebClient.UploadString("http://localhost:3000/sessionData", "POST", json);
-
-            Debug.Log(responseArray);
         }
     }
 }

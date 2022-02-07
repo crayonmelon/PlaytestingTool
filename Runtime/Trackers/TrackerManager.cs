@@ -81,11 +81,22 @@ namespace PlaytestingTool {
 
         void OnApplicationQuit()
         {
+            saveData();
+        }
+
+        public void saveData()
+        {
+            Debug.Log($"size of SessionDataCollection {SessionDataCollection.Count}");
             foreach (var sessionData in SessionDataCollection)
             {
-                Debug.Log("New FileSaved "+ sessionData.objectName + "SceneName " + sessionData.sessionName);
+                Debug.Log("New FileSaved " + sessionData.objectName + "SceneName " + sessionData.sessionName);
                 PlaySessionDataManager.SavePlayerDatJson(sessionData);
-                StartCoroutine(PlaySessionDataManager.UploadData(sessionData));
+
+                if (Settings.UPLOADDATA)
+                {
+                    Debug.Log("Uploading Data...");
+                    PlaySessionDataManager.UploadSessionData(sessionData);
+                }
             }
         }
     }

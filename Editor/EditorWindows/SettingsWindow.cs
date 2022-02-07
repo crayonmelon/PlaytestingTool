@@ -10,8 +10,28 @@ namespace PlaytestingTool
         [MenuItem("Tools/Visualizers/Tool Settings")]
         static void Init() => GetWindow<SettingsWindow>("Tool Settings");
 
+        SerializedObject so;
+        private bool uploadData;
+        private bool enableSaving;
+        private string localFolderPath;
+        private string webEndpoint;
+
         void OnEnable()
         {
+            so = new SerializedObject(this);
+
+            SerializedProperty EnableSavingSerilised = so.FindProperty("enableSaving");
+            enableSaving = Settings.ENABLE;
+
+            SerializedProperty uploadDataSerilised = so.FindProperty("uploadData");
+            uploadData = Settings.UPLOADDATA;
+
+            SerializedProperty FolderPathSerilised = so.FindProperty("localFolderPath");
+            localFolderPath = Settings.FOLDERPATH;
+
+            SerializedProperty WebEndPointSerilised = so.FindProperty("webEndpoint");
+            webEndpoint = Settings.WEBENDPOINT;
+
             Selection.selectionChanged += Repaint;
         }
 
@@ -24,23 +44,40 @@ namespace PlaytestingTool
         {
             GUILayout.Label("Settings");
 
-            Settings.FOLDERPATH = EditorGUILayout.TextField("Local Folder Path:", Settings.FOLDERPATH);
-            Settings.UPLOADDATA = EditorGUILayout.Toggle("Upload Data", Settings.UPLOADDATA);
+            localFolderPath = EditorGUILayout.TextField("Local Folder Path:", Settings.FOLDERPATH);
+            Settings.FOLDERPATH = localFolderPath;
+
+            uploadData = EditorGUILayout.Toggle("Upload Data", Settings.UPLOADDATA);
+            Settings.UPLOADDATA = uploadData;
+            
 
             if (Settings.UPLOADDATA)
             {
-                Settings.WEBENDPOINT = EditorGUILayout.TextField("Server Enpoint:", Settings.WEBENDPOINT);
+                webEndpoint = EditorGUILayout.TextField("Server Enpoint:", Settings.WEBENDPOINT);
+                Settings.WEBENDPOINT = webEndpoint;
 
                 if (GUILayout.Button("Upload Data"))
                 {
                   //  SessionData sessionData = PlaySessionDataManager.LoadPlayerDataJson("24-01-22 PlaySession a5df/SessionData FPSController0.json");
-                    PlaySessionDataManager.UploadSessionData("24-01-22 PlaySession a5df/SessionData FPSController0.json");
+                 //   PlaySessionDataManager.UploadSessionData("24-01-22 PlaySession a5df","24-01-22 PlaySession a5df/SessionData FPSController0.json");
                 }
+
+     
+            }
+            enableSaving = EditorGUILayout.Toggle("Enable Saving", Settings.ENABLE);
+            Settings.ENABLE = enableSaving;
+
+            if (GUILayout.Button("SaveSettings"))
+            {
+                Settings.SaveSettings();
             }
 
-            Settings.ENABLE = EditorGUILayout.Toggle("Enable Saving", Settings.ENABLE);
+            if (GUILayout.Button("LoadSettings"))
+            {
+                Settings.LoadSettings();
+            }
 
-            Debug.Log(Settings.FOLDERPATH);
         }
+
     }
 }

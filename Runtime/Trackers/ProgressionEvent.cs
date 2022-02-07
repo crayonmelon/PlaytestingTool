@@ -15,6 +15,7 @@ namespace PlaytestingTool
         {
             TrackedProgressionEvent trackedProgression = new TrackedProgressionEvent(name, Time.realtimeSinceStartup, value);
             TrackerManager.SaveProgress(trackedProgression);
+
         }
 
         /// <summary>

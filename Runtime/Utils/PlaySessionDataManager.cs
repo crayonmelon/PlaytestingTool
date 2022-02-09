@@ -150,8 +150,8 @@ namespace PlaytestingTool
                 try
                 {
                     string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {i}";
-                    string path = $"{Settings.FOLDERPATH}/Test/{folderName}/";
-                    string file = $"SessionData.json";
+                    string path = $"{Settings.FOLDERPATH}/Test/";
+                    string file = $"{folderName} SessionData.json";
 
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 

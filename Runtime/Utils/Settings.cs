@@ -58,6 +58,11 @@ namespace PlaytestingTool
 
                 JsonUtility.FromJsonOverwrite(json, settingsData);
 
+                FOLDERPATH = settingsData.FolderPath;
+                WEBENDPOINT = settingsData.WebEndpoint;
+                ENABLE = settingsData.EnableSaveData;
+                UPLOADDATA = settingsData.EnableUploadData;
+
             }
             catch (Exception e)
             {

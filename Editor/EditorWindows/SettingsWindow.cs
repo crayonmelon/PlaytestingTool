@@ -20,14 +20,17 @@ namespace PlaytestingTool
         {
             so = new SerializedObject(this);
 
+            Settings.LoadSettings();
+
             SerializedProperty EnableSavingSerilised = so.FindProperty("enableSaving");
             enableSaving = Settings.ENABLE;
-
             SerializedProperty uploadDataSerilised = so.FindProperty("uploadData");
             uploadData = Settings.UPLOADDATA;
 
             SerializedProperty FolderPathSerilised = so.FindProperty("localFolderPath");
             localFolderPath = Settings.FOLDERPATH;
+
+            Debug.Log(localFolderPath);
 
             SerializedProperty WebEndPointSerilised = so.FindProperty("webEndpoint");
             webEndpoint = Settings.WEBENDPOINT;
@@ -67,12 +70,17 @@ namespace PlaytestingTool
             enableSaving = EditorGUILayout.Toggle("Enable Saving", Settings.ENABLE);
             Settings.ENABLE = enableSaving;
 
-            if (GUILayout.Button("SaveSettings"))
+            if (GUILayout.Button("Download Data"))
+            {
+                PlaySessionDataManager.DownloadData();
+            }
+
+            if (GUILayout.Button("Save Settings"))
             {
                 Settings.SaveSettings();
             }
 
-            if (GUILayout.Button("LoadSettings"))
+            if (GUILayout.Button("Load Settings"))
             {
                 Settings.LoadSettings();
             }

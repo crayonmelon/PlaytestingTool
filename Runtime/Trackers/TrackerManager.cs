@@ -21,6 +21,8 @@ namespace PlaytestingTool {
         {
             DontDestroyOnLoad(this.gameObject);
 
+            Settings.LoadSettings();
+
             if (sessionName == null)
                 sessionName = System.Guid.NewGuid().ToString();
         }
@@ -96,6 +98,7 @@ namespace PlaytestingTool {
                 {
                     Debug.Log("Uploading Data...");
                     PlaySessionDataManager.UploadSessionData(sessionData);
+
                 }
             }
         }

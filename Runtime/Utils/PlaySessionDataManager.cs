@@ -7,6 +7,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Net;
 using System.Data.SqlTypes;
+using System.Text.RegularExpressions;
 
 namespace PlaytestingTool
 {
@@ -116,6 +117,54 @@ namespace PlaytestingTool
                 Debug.LogError(e.Message);
             }
 
+        }
+
+        public static void DownloadData()
+        {
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://localhost:3000/getAllData");
+            request.Method = "GET";
+            String test = String.Empty;
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                Stream dataStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(dataStream);
+                test = reader.ReadLine();
+                reader.Close();
+                dataStream.Close();
+            }
+
+            Debug.Log($"TEST, {test}");
+
+            string pattern = @"(?={\""_id"":"")";
+            Debug.Log(pattern);
+            string[] splitTest = Regex.Split(test, pattern);
+
+            //Debug.Log(splitTest.Length);
+
+            for (int i = 0; i < splitTest.Length; i++)
+            {
+                string item = splitTest[i];
+                Debug.Log(item);
+
+                try
+                {
+                    string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {i}";
+                    string path = $"{Settings.FOLDERPATH}/Test/{folderName}/";
+                    string file = $"SessionData.json";
+
+                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+                    File.WriteAllText(path + file, item);
+
+                    //while (File.Exists(path + file))
+                    //    file = $"SessionData {sessionData.objectName}_{fileCount++}.json";
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                }
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ namespace PlaytestingTool
     [System.Serializable]
     public class SessionData
     {
+        public string _id;
         public string SceneName;
         public string UniqueID;
         public string objectName;

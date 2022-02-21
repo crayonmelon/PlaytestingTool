@@ -8,13 +8,18 @@ namespace PlaytestingTool
     public class SettingsWindow : EditorWindow
     {
         [MenuItem("Tools/Visualizers/Tool Settings")]
-        static void Init() => GetWindow<SettingsWindow>("Tool Settings");
+        static void Init() {
+            GetWindow<SettingsWindow>("Tool Settings");
+        }
 
         SerializedObject so;
         private bool uploadData;
         private bool enableSaving;
         private string localFolderPath;
         private string webEndpoint;
+        private string pullRequest;
+
+        public Rect windowRect = new Rect(100, 100, 200, 200);
 
         void OnEnable()
         {
@@ -24,6 +29,7 @@ namespace PlaytestingTool
 
             SerializedProperty EnableSavingSerilised = so.FindProperty("enableSaving");
             enableSaving = Settings.ENABLE;
+
             SerializedProperty uploadDataSerilised = so.FindProperty("uploadData");
             uploadData = Settings.UPLOADDATA;
 
@@ -34,6 +40,9 @@ namespace PlaytestingTool
 
             SerializedProperty WebEndPointSerilised = so.FindProperty("webEndpoint");
             webEndpoint = Settings.WEBENDPOINT;
+
+            SerializedProperty PullRequestSerilised = so.FindProperty("pullRequest");
+            pullRequest = Settings.PULLREQUESTLINK;
 
             Selection.selectionChanged += Repaint;
         }
@@ -56,24 +65,24 @@ namespace PlaytestingTool
 
             if (Settings.UPLOADDATA)
             {
-                webEndpoint = EditorGUILayout.TextField("Server Enpoint:", Settings.WEBENDPOINT);
+                webEndpoint = EditorGUILayout.TextField("Server Push Request Enpoint:", Settings.WEBENDPOINT);
                 Settings.WEBENDPOINT = webEndpoint;
 
-                if (GUILayout.Button("Upload Data"))
-                {
-                  //  SessionData sessionData = PlaySessionDataManager.LoadPlayerDataJson("24-01-22 PlaySession a5df/SessionData FPSController0.json");
-                 //   PlaySessionDataManager.UploadSessionData("24-01-22 PlaySession a5df","24-01-22 PlaySession a5df/SessionData FPSController0.json");
-                }
-
-     
+                pullRequest = EditorGUILayout.TextField("Server Get Request Enpoint:", Settings.PULLREQUESTLINK);
+                Settings.PULLREQUESTLINK = pullRequest;
             }
+     
             enableSaving = EditorGUILayout.Toggle("Enable Saving", Settings.ENABLE);
             Settings.ENABLE = enableSaving;
 
             if (GUILayout.Button("Download Data"))
             {
                 PlaySessionDataManager.DownloadData();
+
+             /*   VisualizerWindow inst = ScriptableObject.CreateInstance<VisualizerWindow>();
+                inst.Show();*/
             }
+
 
             if (GUILayout.Button("Save Settings"))
             {
@@ -85,6 +94,11 @@ namespace PlaytestingTool
                 Settings.LoadSettings();
             }
 
+        }
+        void DoWindow(int unusedWindowID)
+        {
+            GUILayout.Button("Hi");
+            GUI.DragWindow();
         }
 
     }

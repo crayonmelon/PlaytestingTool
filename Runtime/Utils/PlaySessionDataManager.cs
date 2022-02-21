@@ -119,9 +119,12 @@ namespace PlaytestingTool
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static void DownloadData()
         {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://localhost:3000/getAllData");
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(Settings.PULLREQUESTLINK);
             request.Method = "GET";
             String test = String.Empty;
 
@@ -133,25 +136,64 @@ namespace PlaytestingTool
                 reader.Close();
                 dataStream.Close();
             }
-
-            Debug.Log($"TEST, {test}");
+            
+            Debug.Log("Began Downloading Data");
 
             string pattern = @"(?={\""_id"":"")";
-            Debug.Log(pattern);
             string[] splitTest = Regex.Split(test, pattern);
 
             //Debug.Log(splitTest.Length);
 
+            int MissingJsonFiles = 0;
+
             for (int i = 0; i < splitTest.Length; i++)
             {
                 string item = splitTest[i];
-                Debug.Log(item);
+                //Debug.Log(item);
+
+                SessionData sessionData = new SessionData();
 
                 try
                 {
-                    string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {i}";
-                    string path = $"{Settings.FOLDERPATH}/Test/";
-                    string file = $"{folderName} SessionData.json";
+                    // Validate JSON
+                    if (!(item.StartsWith("{") && item.EndsWith("}")))
+                    {
+                        if (item.EndsWith(","))
+                        {
+                            item = item.Remove(item.Length - 1, 1);
+                        }
+
+                        else if (item.EndsWith("],["))
+                        {
+                            item = item.Remove(item.Length - 3, 3);
+                        }
+
+                        else if (item.EndsWith("]]"))
+                        {
+                            item = item.Remove(item.Length - 2, 2);
+                        }
+
+                        else if (item.EndsWith("[["))
+                        {
+                            continue;
+                        }
+                    }
+
+                    JsonUtility.FromJsonOverwrite(item, sessionData);
+
+                }
+                catch (Exception e)
+                {
+                    MissingJsonFiles++;
+                    Debug.LogError( $"Not Valid JSON \n {item} \n Error {e}" );
+                }
+
+                try
+                {
+                    string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {sessionData.sessionName.Substring(0, 4)}";
+
+                    string path = $"{Settings.FOLDERPATH}/{folderName}/";
+                    string file = $"SessionData {sessionData.objectName}.json";
 
                     if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
@@ -164,7 +206,10 @@ namespace PlaytestingTool
                 {
                     Debug.LogError(e.Message);
                 }
+
             }
+
+            Debug.Log($"Successfuly Downloaded JSON files from DATABASE \n {MissingJsonFiles} files failed");
         }
     }
 }

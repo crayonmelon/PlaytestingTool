@@ -7,7 +7,7 @@ namespace PlaytestingTool
 {
     public class SettingsWindow : EditorWindow
     {
-        [MenuItem("Tools/Visualizers/Tool Settings")]
+        [MenuItem("Tools/PlayTesting Tool/Tool Settings")]
         static void Init() {
             GetWindow<SettingsWindow>("Tool Settings");
         }
@@ -79,8 +79,8 @@ namespace PlaytestingTool
             {
                 PlaySessionDataManager.DownloadData();
 
-             /*   VisualizerWindow inst = ScriptableObject.CreateInstance<VisualizerWindow>();
-                inst.Show();*/
+                PopupWindow inst = ScriptableObject.CreateInstance<PopupWindow>();
+                inst.Show();
             }
 
 

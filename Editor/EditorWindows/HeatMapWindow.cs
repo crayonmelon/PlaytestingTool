@@ -22,8 +22,8 @@ namespace PlaytestingTool
         string SceneName;
         int dataFlags = 0;
 
-        [MenuItem("Tools/Visualizers/HeatMap")]
-        static void Init() => GetWindow<HeatMapWindow>("HeatMap Visualizer");
+        [MenuItem("Tools/PlayTesting Tool/Visualisers/Heat Map")]
+        static void Init() => GetWindow<HeatMapWindow>("HeatMap Visualiser");
 
         void OnEnable()
         {

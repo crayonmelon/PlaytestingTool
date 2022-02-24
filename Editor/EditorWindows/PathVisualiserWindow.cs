@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace PlaytestingTool
 {
-    public class VisualizerWindow : EditorWindow
+    public class PathVisualiserWindow : EditorWindow
     {
         public List<SessionData> ChosenPlayersData = new List<SessionData>();
         public List<string> areasWithin = new List<string>();
@@ -47,8 +47,8 @@ namespace PlaytestingTool
 
         SerializedObject so;
 
-        [MenuItem("Tools/Visualizers/VisualizeMovement")]
-        static void Init() => GetWindow<VisualizerWindow>("Data Visualizer");
+        [MenuItem("Tools/PlayTesting Tool/Visualisers/Path Visualiser")]
+        static void Init() => GetWindow<PathVisualiserWindow>("Path Visualiser");
 
         void InitStyle()
         {

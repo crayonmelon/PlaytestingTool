@@ -21,8 +21,8 @@ namespace PlaytestingTool
             {
 
                 PathVisualiserWindow inst = GetWindow<PathVisualiserWindow>("Path Visualiser");
+               
                 inst.Show();
-
             }
 
             if (GUILayout.Button("Drawn Heat Map"))

@@ -46,8 +46,6 @@ namespace PlaytestingTool
             {
                 string path = $"{Application.dataPath}/Settings/";
 
-                Debug.Log(path);
-
                 if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
 

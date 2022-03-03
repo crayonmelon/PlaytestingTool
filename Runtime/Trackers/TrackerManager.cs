@@ -70,7 +70,6 @@ namespace PlaytestingTool {
 
         internal static void SaveProgress(TrackedProgressionEvent trackedProgression)
         {
-            Debug.Log("made it here");
             int dataindex = GetSessionDataPos();
             Debug.Log(SessionDataCollection[dataindex]);
             SessionDataCollection[dataindex].trackedProgressions.Add(trackedProgression);

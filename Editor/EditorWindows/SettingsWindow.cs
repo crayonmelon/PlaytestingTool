@@ -36,8 +36,6 @@ namespace PlaytestingTool
             SerializedProperty FolderPathSerilised = so.FindProperty("localFolderPath");
             localFolderPath = Settings.FOLDERPATH;
 
-            Debug.Log(localFolderPath);
-
             SerializedProperty WebEndPointSerilised = so.FindProperty("webEndpoint");
             webEndpoint = Settings.WEBENDPOINT;
 

@@ -30,7 +30,6 @@ namespace PlaytestingTool
 
         //timeline 
         int TimelineValue = 0;
-        int minTime = 0;
         int MaxTime;
 
         //toggle buttons

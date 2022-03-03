@@ -22,7 +22,21 @@ namespace PlaytestingTool
         private void OnEnable()
         {
             choices = GetSessionDataLib.GetSessionDataChoices(true);
+            Selection.selectionChanged += Repaint;
+            SceneView.duringSceneGui += this.DuringSceneGUI;
+
         }
+
+        private void OnDisable()
+        {
+            Selection.selectionChanged -= Repaint;
+        }
+
+        void OnFocus()
+        {
+            choices = GetSessionDataLib.GetSessionDataChoices(true);
+        }
+
 
         private void OnGUI()
         {
@@ -35,6 +49,26 @@ namespace PlaytestingTool
                 {
                     ChoosenSessionDataSets = GetSessionDataLib.GetChosenSessionData(choices, dataFlags, false);
                     //  Debug.Log(ChoosenSessionDataSets.Count);
+                }
+            }
+
+            foreach (var sessionData in ChoosenSessionDataSets)
+            {
+                foreach (var progressEvent in sessionData.trackedProgressions)
+                {
+                    GUILayout.Label(progressEvent.eventName);
+                }
+            }
+        }
+
+        void DuringSceneGUI(SceneView sceneView)
+        {
+            foreach (var sessionData in ChoosenSessionDataSets)
+            {
+                foreach (var progressEvent in sessionData.trackedProgressions)
+                {
+                    Debug.Log($"Pos {progressEvent.trackedPosition}");
+                    Handles.SphereHandleCap(0, progressEvent.trackedPosition, Quaternion.LookRotation(Vector3.up), 2, EventType.Repaint);
                 }
             }
         }

@@ -58,24 +58,29 @@ namespace PlaytestingTool
     }
 
     [System.Serializable]
-    public struct TrackedProgressionEvent
+    public class TrackedProgressionEvent
     {
         public float timeStamp;
         public string eventName;
         public string value;
+        public Vector3Data trackedPosition;
 
-        public TrackedProgressionEvent(string eventName, float timeStamp, object value)
+        
+        public TrackedProgressionEvent(string eventName, float timeStamp, object value = null)
         {
             this.eventName = eventName;
             this.timeStamp = timeStamp;
-            this.value = value.ToString();
+            if (value != null)
+                this.value = value.ToString();
         }
 
-        public TrackedProgressionEvent(string eventName, float timeStamp)
+        public TrackedProgressionEvent(string eventName, float timeStamp, Vector3Data trackedPosition, object value = null)
         {
             this.eventName = eventName;
             this.timeStamp = timeStamp;
-            this.value = null;
+            this.trackedPosition = trackedPosition;
+            if (value != null)
+                this.value = value.ToString();
         }
     }
 
@@ -93,6 +98,19 @@ namespace PlaytestingTool
             this.statName = statName;
             this.maxValue = maxValue;
             this.value = value;
+        }
+    }
+
+    [System.Serializable]
+    public struct TrackedPosition
+    {
+        public Vector3Data trackedPosition;
+        public float timeStamp;
+
+        public TrackedPosition(Vector3Data tp, float tt)
+        {
+            trackedPosition = tp;
+            timeStamp = tt;
         }
     }
 }

@@ -32,17 +32,4 @@ namespace PlaytestingTool
         private void OnDisable() => SaveData();
         public void SaveData() => TrackerManager.SaveMovement(trackedPosition, tracking.name);
     }
-
-    [System.Serializable]
-    public struct TrackedPosition
-    {
-        public Vector3Data trackedPosition;
-        public float timeStamp;
-
-        public TrackedPosition(Vector3Data tp, float tt)
-        {
-            trackedPosition = tp;
-            timeStamp = tt;
-        }
-    }
 }

@@ -17,8 +17,16 @@ namespace PlaytestingTool
         [MenuItem("Tools/PlayTesting Tool/Visualisers/Time Line")]
         static void Init() => GetWindow<TimeLineWindow>("Time Line Visualiser");
 
-
         private void OnEnable()
+        {
+            RefreshData();
+        }
+        void OnFocus()
+        {
+            RefreshData();
+        }
+
+        public void RefreshData()
         {
             choices = GetSessionDataLib.GetSessionDataChoices(false);
         }

@@ -71,7 +71,6 @@ namespace PlaytestingTool
                 if (rightValue < playerData.trackedPositions.Count)
                 {
                     rightValue = playerData.trackedPositions.Count;
-
                 }
 
                 for (int i = 0; i < playerData.trackedPositions.Count; i++)

@@ -5,7 +5,8 @@ using UnityEditor;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using System.IO;
-
+using System;
+using System.Linq;
 namespace PlaytestingTool
 {
     public class HeatMapWindow : EditorWindow
@@ -15,6 +16,8 @@ namespace PlaytestingTool
 
         List<SessionData> ChoosenSessionDataSets = new List<SessionData>();
         Vector2 GUIOverflow;
+
+        Dictionary<string, bool> progressEventNames = new Dictionary<string, bool>();
 
         [MenuItem("Tools/PlayTesting Tool/Visualisers/Heat Map")]
         static void Init() => GetWindow<HeatMapWindow>("HeatMap Visualiser");
@@ -49,6 +52,7 @@ namespace PlaytestingTool
                 {
                     ChoosenSessionDataSets = GetSessionDataLib.GetChosenSessionData(choices, dataFlags, false);
                     //  Debug.Log(ChoosenSessionDataSets.Count);
+
                 }
             }
 
@@ -56,8 +60,19 @@ namespace PlaytestingTool
             {
                 foreach (var progressEvent in sessionData.trackedProgressions)
                 {
-                    GUILayout.Label(progressEvent.eventName);
+                    if (!progressEventNames.ContainsKey(progressEvent.eventName))
+                    {
+                        progressEventNames.Add(progressEvent.eventName, false);
+                    }
                 }
+            }
+
+            for (int i = 0; i < progressEventNames.Keys.Count; i++)
+            {
+                var eventName = new List<string>(progressEventNames.Keys)[i];
+                // string eventName = progressEventNames.Keys.ToList()[i];
+
+                progressEventNames[eventName] = GUILayout.Toggle(progressEventNames[eventName], eventName);
             }
         }
 
@@ -67,8 +82,12 @@ namespace PlaytestingTool
             {
                 foreach (var progressEvent in sessionData.trackedProgressions)
                 {
-                    Debug.Log($"Pos {progressEvent.trackedPosition}");
-                    Handles.SphereHandleCap(0, progressEvent.trackedPosition, Quaternion.LookRotation(Vector3.up), 2, EventType.Repaint);
+                    if (progressEventNames.ContainsKey(progressEvent.eventName) && progressEventNames[progressEvent.eventName])
+                    {
+                        Debug.Log($"Pos {progressEvent.trackedPosition}");
+                        Handles.SphereHandleCap(0, progressEvent.trackedPosition, Quaternion.LookRotation(Vector3.up), 2, EventType.Repaint);
+                    }
+
                 }
             }
         }

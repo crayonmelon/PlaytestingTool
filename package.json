@@ -1,6 +1,6 @@
 {
   "name": "com.ciaranmalone.playtestingtool",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "displayName": "PlayTesting Tool",
   "description": "A Unity package consisting of tools for tracking, storing and visualising play-session to aid with playtesting.",
   "unity": "2020.3",

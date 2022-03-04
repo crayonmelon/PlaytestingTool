@@ -22,6 +22,12 @@ namespace PlaytestingTool
         [MenuItem("Tools/PlayTesting Tool/Visualisers/Heat Map")]
         static void Init() => GetWindow<HeatMapWindow>("HeatMap Visualiser");
 
+        /// <summary>
+        /// UI Size
+        /// </summary>
+
+        float iconSize;
+
         private void OnEnable()
         {
             choices = GetSessionDataLib.GetSessionDataChoices(true);
@@ -74,6 +80,9 @@ namespace PlaytestingTool
 
                 progressEventNames[eventName] = GUILayout.Toggle(progressEventNames[eventName], eventName);
             }
+
+            GUILayout.Label("Icon Size");
+            iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15);
         }
 
         void DuringSceneGUI(SceneView sceneView)
@@ -85,7 +94,7 @@ namespace PlaytestingTool
                     if (progressEventNames.ContainsKey(progressEvent.eventName) && progressEventNames[progressEvent.eventName])
                     {
                         Debug.Log($"Pos {progressEvent.trackedPosition}");
-                        Handles.SphereHandleCap(0, progressEvent.trackedPosition, Quaternion.LookRotation(Vector3.up), 2, EventType.Repaint);
+                        Handles.SphereHandleCap(0, progressEvent.trackedPosition, Quaternion.LookRotation(Vector3.up), iconSize, EventType.Repaint);
                     }
 
                 }

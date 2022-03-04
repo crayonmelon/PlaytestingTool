@@ -27,6 +27,7 @@ namespace PlaytestingTool
 
         //labels
         string SceneName;
+        float iconSize;
 
         //timeline 
         int TimelineValue = 0;
@@ -141,6 +142,9 @@ namespace PlaytestingTool
                 GUILayout.EndScrollView();
             }
             GUILayout.EndScrollView();
+
+            GUILayout.Label("Icon Size");
+            iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15);
         }
 
         void CheckAreaBoundsButton()

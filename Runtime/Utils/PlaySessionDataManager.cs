@@ -106,6 +106,7 @@ namespace PlaytestingTool
                 WebClient myWebClient = new WebClient();
                 myWebClient.Encoding = System.Text.Encoding.UTF8;
                 myWebClient.Headers.Add(HttpRequestHeader.ContentType, "application/json; charset=utf-8");
+                myWebClient.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + Settings.AUTHTOKEN);
 
                 string responseArray = myWebClient.UploadString($"{Settings.WEBENDPOINT}/{collectionName}", "POST", json);
 
@@ -125,6 +126,7 @@ namespace PlaytestingTool
         public static void DownloadData()
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(Settings.PULLREQUESTLINK);
+            request.Headers.Add(HttpRequestHeader.Authorization, "Bearer " + Settings.AUTHTOKEN);
             request.Method = "GET";
             String test = String.Empty;
 

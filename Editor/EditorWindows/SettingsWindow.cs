@@ -18,6 +18,7 @@ namespace PlaytestingTool
         private string localFolderPath;
         private string webEndpoint;
         private string pullRequest;
+        private string authToken;
 
         public Rect windowRect = new Rect(100, 100, 200, 200);
 
@@ -42,6 +43,9 @@ namespace PlaytestingTool
             SerializedProperty PullRequestSerilised = so.FindProperty("pullRequest");
             pullRequest = Settings.PULLREQUESTLINK;
 
+            SerializedProperty AuthTokenSerilised = so.FindProperty("authToken");
+            authToken = Settings.AUTHTOKEN;
+
             Selection.selectionChanged += Repaint;
         }
 
@@ -49,28 +53,37 @@ namespace PlaytestingTool
         {
             Selection.selectionChanged -= Repaint;
         }
-
+        bool showAuthField = true;
         private void OnGUI()
         {
             GUILayout.Label("Settings");
 
-            localFolderPath = EditorGUILayout.TextField("Local Folder Path:", Settings.FOLDERPATH);
+            localFolderPath = EditorGUILayout.TextField("Local Folder Path", Settings.FOLDERPATH);
             Settings.FOLDERPATH = localFolderPath;
 
-            uploadData = EditorGUILayout.Toggle("Upload Data", Settings.UPLOADDATA);
+            uploadData = EditorGUILayout.Toggle("Enable Uploading Data", Settings.UPLOADDATA);
             Settings.UPLOADDATA = uploadData;
             
-
             if (Settings.UPLOADDATA)
             {
-                webEndpoint = EditorGUILayout.TextField("Server Push Request Enpoint:", Settings.WEBENDPOINT);
+                webEndpoint = EditorGUILayout.TextField("Push Request Enpoint:", Settings.WEBENDPOINT);
                 Settings.WEBENDPOINT = webEndpoint;
 
-                pullRequest = EditorGUILayout.TextField("Server Get Request Enpoint:", Settings.PULLREQUESTLINK);
+                pullRequest = EditorGUILayout.TextField("Get Request Enpoint:", Settings.PULLREQUESTLINK);
                 Settings.PULLREQUESTLINK = pullRequest;
+
+                EditorGUILayout.LabelField("AuthToken");
+                showAuthField = EditorGUILayout.Toggle("Hide", showAuthField);
+                if (!showAuthField)
+                {
+                    GUIStyle style = new GUIStyle(EditorStyles.textArea);
+                    style.wordWrap = true;
+                    authToken = EditorGUILayout.TextArea(Settings.AUTHTOKEN, style);
+                    Settings.AUTHTOKEN = authToken;
+                }
             }
      
-            enableSaving = EditorGUILayout.Toggle("Enable Saving", Settings.ENABLE);
+            enableSaving = EditorGUILayout.Toggle("Enable Local Saving", Settings.ENABLE);
             Settings.ENABLE = enableSaving;
 
             if (GUILayout.Button("Download Data"))
@@ -80,7 +93,6 @@ namespace PlaytestingTool
                 PopupWindow inst = ScriptableObject.CreateInstance<PopupWindow>();
                 inst.Show();
             }
-
 
             if (GUILayout.Button("Save Settings"))
             {

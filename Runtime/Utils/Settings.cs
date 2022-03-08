@@ -13,13 +13,13 @@ namespace PlaytestingTool
         private static string _PULLREQUESTLINK;
         private static bool _UPLOADDATA;
         private static bool _ENABLE;
-
+        private static string _AUTHTOKEN;
         public static void SaveSettings(SettingsData settingsData = null)
         {
 
             if (settingsData == null)
             {
-                settingsData = new SettingsData(FOLDERPATH, WEBENDPOINT, UPLOADDATA, ENABLE, PULLREQUESTLINK);
+                settingsData = new SettingsData(FOLDERPATH, WEBENDPOINT, UPLOADDATA, ENABLE, PULLREQUESTLINK, AUTHTOKEN);
             }
 
             //Save JSON
@@ -62,6 +62,7 @@ namespace PlaytestingTool
                 ENABLE = settingsData.EnableSaveData;
                 UPLOADDATA = settingsData.EnableUploadData;
                 PULLREQUESTLINK = settingsData.PullRequestLink;
+                AUTHTOKEN = settingsData.AuthToken;
 
             }
             catch (Exception e)
@@ -72,7 +73,7 @@ namespace PlaytestingTool
 
         public static void CreateDefaultFile()
         {
-            SettingsData settingsData = new SettingsData("Assets/SessionData", "http://localhost:3000/sessionData", false, true, "http://localhost:3000/getAllData");
+            SettingsData settingsData = new SettingsData("Assets/SessionData", "http://localhost:3000/sessionData", false, true, "http://localhost:3000/getAllData", "secret");
             SaveSettings(settingsData);
         }
 
@@ -104,9 +105,15 @@ namespace PlaytestingTool
             get { return _PULLREQUESTLINK; }
             set { _PULLREQUESTLINK = value; }
         }
+
+        public static string AUTHTOKEN
+        {
+            get { return _AUTHTOKEN; }
+            set { _AUTHTOKEN = value; }
+        }
     }
 
-
+    
     [System.Serializable]
     public class SettingsData
     {
@@ -115,14 +122,16 @@ namespace PlaytestingTool
         public bool EnableUploadData;
         public bool EnableSaveData;
         public string PullRequestLink;
+        public string AuthToken;
 
-        public SettingsData(string folderPath, string webEndpoint, bool enableUploadData, bool enableSaveData, string pullRequestLink)
+        public SettingsData(string folderPath, string webEndpoint, bool enableUploadData, bool enableSaveData, string pullRequestLink, string authToken)
         {
             FolderPath = folderPath;
             WebEndpoint = webEndpoint;
             EnableUploadData = enableUploadData;
             EnableSaveData = enableSaveData;
             PullRequestLink = pullRequestLink;
+            AuthToken = authToken;
         }
 
         public SettingsData()

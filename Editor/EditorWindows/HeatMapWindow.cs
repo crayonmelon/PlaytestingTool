@@ -65,7 +65,6 @@ namespace PlaytestingTool
             else
                 GUILayout.Label("No Data Collected Yet");
 
-            GUILayout.EndVertical();
                 foreach (var sessionData in ChoosenSessionDataSets)
                 {
                     foreach (var progressEvent in sessionData.trackedProgressions)
@@ -88,6 +87,17 @@ namespace PlaytestingTool
 
                 GUILayout.Label("Icon Size");
                 iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15,GUILayout.Width(300));
+
+            }
+
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Refresh", GUILayout.Width(300)))
+            {
+                choices = GetSessionDataLib.GetSessionDataChoices(true);
+                Selection.selectionChanged += Repaint;
+
             }
         }
 

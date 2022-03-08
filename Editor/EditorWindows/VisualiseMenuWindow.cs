@@ -15,7 +15,7 @@ namespace PlaytestingTool
 
         public void OnGUI()
         {
-            GUILayout.BeginVertical("Settings", GUILayout.Width(300));
+            GUILayout.BeginVertical(GUILayout.Width(300));
 
             GUILayout.Label("Choose Visualisation Type");
 

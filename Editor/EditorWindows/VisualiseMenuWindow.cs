@@ -15,26 +15,29 @@ namespace PlaytestingTool
 
         public void OnGUI()
         {
+            GUILayout.BeginVertical("Settings", GUILayout.Width(300));
+
             GUILayout.Label("Choose Visualisation Type");
 
             if (GUILayout.Button("Drawn Path"))
             {
-
-                PathVisualiserWindow inst = GetWindow<PathVisualiserWindow>("Path Visualiser");
-               
+                PathVisualiserWindow inst = GetWindow<PathVisualiserWindow>("Path Visualiser", typeof(VisualiseMenuWindow));
                 inst.Show();
             }
 
             if (GUILayout.Button("Drawn Heat Map"))
             {
-                HeatMapWindow inst = GetWindow<HeatMapWindow>("HeatMap Visualiser");
+                HeatMapWindow inst = GetWindow<HeatMapWindow>("HeatMap Visualiser", typeof(VisualiseMenuWindow));
                 inst.Show();
             }
 
             if (GUILayout.Button("Draw Time Line"))
             {
-                Debug.Log("not done yet snake");
+                TimeLineWindow inst = GetWindow<TimeLineWindow>("Time Line Visualiser", typeof(VisualiseMenuWindow));
+                inst.Show();
             }
+            
+            GUILayout.EndVertical();
         }
     }
 }

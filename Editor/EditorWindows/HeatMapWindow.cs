@@ -22,11 +22,10 @@ namespace PlaytestingTool
         [MenuItem("Tools/PlayTesting Tool/Visualisers/Heat Map")]
         static void Init() => GetWindow<HeatMapWindow>("HeatMap Visualiser");
 
-        /// <summary>
-        /// UI Size
-        /// </summary>
 
-        float iconSize;
+        //SerializedObjects 
+        SerializedObject so;
+        float iconSize = 1;
 
         private void OnEnable()
         {
@@ -49,58 +48,63 @@ namespace PlaytestingTool
 
         private void OnGUI()
         {
-            GUILayout.Label("Choose Player Data:");
+            GUILayout.BeginVertical("box", GUILayout.Width(300));
+
+            GUILayout.Label("Choose Session Data:");
 
             if (choices.Count >= 1)
             {
                 dataFlags = EditorGUILayout.MaskField("Player Data", dataFlags, choices.ToArray());
                 if (GUILayout.Button("Select"))
                 {
-                    ChoosenSessionDataSets = GetSessionDataLib.GetChosenSessionData(choices, dataFlags, false);
+                    ChoosenSessionDataSets = GetSessionDataLib.GetChosenSessionData(choices, dataFlags, true);
                     //  Debug.Log(ChoosenSessionDataSets.Count);
-
+                    progressEventNames.Clear();
                 }
             }
+            else
+                GUILayout.Label("No Data Collected Yet");
 
-            foreach (var sessionData in ChoosenSessionDataSets)
-            {
-                foreach (var progressEvent in sessionData.trackedProgressions)
+            GUILayout.EndVertical();
+                foreach (var sessionData in ChoosenSessionDataSets)
                 {
-                    if (!progressEventNames.ContainsKey(progressEvent.eventName))
+                    foreach (var progressEvent in sessionData.trackedProgressions)
                     {
-                        progressEventNames.Add(progressEvent.eventName, false);
+                        if (!progressEventNames.ContainsKey(progressEvent.eventName))
+                        {
+                            progressEventNames.Add(progressEvent.eventName, false);
+                        }
                     }
                 }
-            }
 
-            for (int i = 0; i < progressEventNames.Keys.Count; i++)
+            if (progressEventNames.Count > 0)
             {
-                var eventName = new List<string>(progressEventNames.Keys)[i];
-                // string eventName = progressEventNames.Keys.ToList()[i];
+                for (int i = 0; i < progressEventNames.Keys.Count; i++)
+                {
+                    var eventName = new List<string>(progressEventNames.Keys)[i];
+                    // string eventName = progressEventNames.Keys.ToList()[i];
+                    progressEventNames[eventName] = GUILayout.Toggle(progressEventNames[eventName], eventName);
+                }
 
-                progressEventNames[eventName] = GUILayout.Toggle(progressEventNames[eventName], eventName);
+                GUILayout.Label("Icon Size");
+                iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15,GUILayout.Width(300));
             }
-
-            GUILayout.Label("Icon Size");
-            iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15);
         }
 
         void DuringSceneGUI(SceneView sceneView)
         {
+            Handles.color = Color.white;
+
             foreach (var sessionData in ChoosenSessionDataSets)
             {
                 foreach (var progressEvent in sessionData.trackedProgressions)
                 {
                     if (progressEventNames.ContainsKey(progressEvent.eventName) && progressEventNames[progressEvent.eventName])
                     {
-                        Debug.Log($"Pos {progressEvent.trackedPosition}");
                         Handles.SphereHandleCap(0, progressEvent.trackedPosition, Quaternion.LookRotation(Vector3.up), iconSize, EventType.Repaint);
                     }
-
                 }
             }
         }
     }
 }
-
-

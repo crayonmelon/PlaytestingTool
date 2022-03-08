@@ -91,6 +91,9 @@ namespace PlaytestingTool {
             foreach (var sessionData in SessionDataCollection)
             {
                 Debug.Log("New FileSaved " + sessionData.objectName + "SceneName " + sessionData.sessionName);
+
+                sessionData.dateCreated = $"{System.DateTime.Now:dd-MM-yy}";
+
                 PlaySessionDataManager.SavePlayerDatJson(sessionData);
 
                 if (Settings.UPLOADDATA)

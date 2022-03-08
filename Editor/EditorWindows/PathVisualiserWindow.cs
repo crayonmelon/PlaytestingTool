@@ -10,7 +10,7 @@ namespace PlaytestingTool
 {
     public class PathVisualiserWindow : EditorWindow
     {
-        public List<SessionData> ChosenPlayersData = new List<SessionData>();
+        public List<SessionData> ChosenSessionData = new List<SessionData>();
         public List<string> areasWithin = new List<string>();
         private string areaBreakdownText;
 
@@ -27,7 +27,7 @@ namespace PlaytestingTool
 
         //labels
         string SceneName;
-        float iconSize;
+        float iconSize = 1;
 
         //timeline 
         int TimelineValue = 0;
@@ -71,6 +71,8 @@ namespace PlaytestingTool
         void OnEnable()
         {
             so = new SerializedObject(this);
+            SerializedProperty iconSizeSerilised = so.FindProperty("iconSize");
+
             propAreaPoints = so.FindProperty("areaPoints");
             SceneName = EditorSceneManager.GetActiveScene().name;
             GetPlayersData();
@@ -92,8 +94,9 @@ namespace PlaytestingTool
         public void OnGUI()
         {
             GUIOverflow = GUILayout.BeginScrollView(GUIOverflow, false, true);
+            GUILayout.BeginVertical("box", GUILayout.Width(300));
 
-            GUILayout.Label("Choose Player Data:");
+            GUILayout.Label("Choose Session Data:");
 
             if (choices.Count >= 1)
             {
@@ -103,6 +106,8 @@ namespace PlaytestingTool
             }
             else
                 GUILayout.Label("No Data Collected Yet");
+
+            GUILayout.EndHorizontal();
 
             GUILayout.Label($"You are in scene: {SceneName}", EditorStyles.boldLabel);
 
@@ -141,16 +146,16 @@ namespace PlaytestingTool
 
                 GUILayout.EndScrollView();
             }
-            GUILayout.EndScrollView();
 
             GUILayout.Label("Icon Size");
             iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15);
+            GUILayout.EndScrollView();
         }
 
         void CheckAreaBoundsButton()
         {
             areaBreakdownText = "";
-            foreach (var playerdata in ChosenPlayersData)
+            foreach (var playerdata in ChosenSessionData)
             {
                 Dictionary<string, int> areasBound = CalculationLib.ContainsVectors(playerdata.trackedPositions, areaPoints);
                 foreach (var item in areasBound)
@@ -166,16 +171,16 @@ namespace PlaytestingTool
             
             if(drawPaths)
             {
-                for (int k = 0; k < ChosenPlayersData.Count; k++)
+                for (int k = 0; k < ChosenSessionData.Count; k++)
                 {
-                    var playerData = ChosenPlayersData[k];
+                    var playerData = ChosenSessionData[k];
                     if (MaxTime < playerData.trackedPositions.Count)
                     {
                         MaxTime = playerData.trackedPositions.Count;
                     }
                 }
                 
-                DrawLib.drawPath(MaxTime, TimelineValue, ChosenPlayersData);
+                DrawLib.drawPath(MaxTime, TimelineValue, ChosenSessionData);
             }
 
             if(drawAreas)
@@ -192,67 +197,13 @@ namespace PlaytestingTool
 
         void SetChosenPlayerData()
         {
-            ChosenPlayersData.Clear();
-
-            for (int i = 0; i < choices.Count; i++)
-            {
-                if ((dataFlags & (1 << i)) == (1 << i))
-                {
-                    Debug.Log(choices[i]);
-                    //    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson(Path.GetFileName(file));
-                    string[] allFiles = Directory.GetFiles($"{Settings.FOLDERPATH}/{choices[i]}/", "*.json");
-
-                    foreach (string file in allFiles)
-                    {
-                        SessionData playerDataTemp;
-
-                        file.Contains(SceneName);
-                        playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{choices[i]}/{Path.GetFileName(file)}");
-
-                        if (playerDataTemp.SceneName == SceneName)
-                        {
-                            ChosenPlayersData.Add(playerDataTemp);
-                        }
-                    }
-                }
-            }
-
+            ChosenSessionData = GetSessionDataLib.GetChosenSessionData(choices, dataFlags, true);
             SceneView.RepaintAll();
         }
 
         void GetPlayersData()
         {
-            string path = $"{Settings.FOLDERPATH}/";
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            
-            string[] allDir = Directory.GetDirectories(path);
-            ChosenPlayersData.Clear();
-            choices.Clear();
-
-            foreach (string dir in allDir)
-            {
-                string LevelName = new DirectoryInfo(dir).Name;
-                string[] allFiles = Directory.GetFiles($"{Settings.FOLDERPATH}/{LevelName}/", "*.json");
-
-
-                foreach (string file in allFiles)
-                {
-                    SessionData playerDataTemp;
-
-                    file.Contains(SceneName);
-                    playerDataTemp = PlaySessionDataManager.LoadPlayerDataJson($"{LevelName}/{Path.GetFileName(file)}");
-
-                    if (playerDataTemp == null)
-                    {
-                        return;
-                    }
-                    
-                    if (playerDataTemp.SceneName == SceneName)
-                    {
-                        choices.Add(LevelName);
-                    }
-                }
-            }
+            choices = GetSessionDataLib.GetSessionDataChoices(true);
         }
 
         void stateChanged(PlayModeStateChange state)

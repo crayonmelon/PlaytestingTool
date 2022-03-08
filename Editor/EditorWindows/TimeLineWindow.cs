@@ -33,7 +33,9 @@ namespace PlaytestingTool
 
         private void OnGUI()
         {
-            GUILayout.Label("Choose Player Data:");
+            GUILayout.BeginVertical("box", GUILayout.Width(300));
+
+            GUILayout.Label("Choose Session Data:");
 
             if (choices.Count >= 1)
             {
@@ -44,6 +46,10 @@ namespace PlaytestingTool
                     //  Debug.Log(ChoosenSessionDataSets.Count);
                 }
             }
+            else
+                GUILayout.Label("No Data Collected Yet");
+
+            GUILayout.EndVertical();
 
             GUIOverflow = GUILayout.BeginScrollView(GUIOverflow, false, false);
             drawTimeline();
@@ -53,9 +59,7 @@ namespace PlaytestingTool
 
         private void drawTimeline()
         {
-
             GUILayout.BeginHorizontal("box");
-            drawColTimeline();
 
             foreach (var sessionData in ChoosenSessionDataSets)
             {
@@ -64,9 +68,9 @@ namespace PlaytestingTool
 
 
                 GUILayout.BeginVertical("box", GUILayout.Width(300));
-                GUILayout.Label(sessionData.sessionName);
+                GUILayout.Label($"Session {sessionData.dateCreated}");
 
-                List<TrackedProgressionEvent> list = sessionData.trackedProgressions.OrderBy(x => x.timeStamp).ToList();
+                List <TrackedProgressionEvent> list = sessionData.trackedProgressions.OrderBy(x => x.timeStamp).ToList();
                 for (int i = 0; i < list.Count; i++)
                 {
                     TrackedProgressionEvent progressEvent = list[i];
@@ -75,23 +79,24 @@ namespace PlaytestingTool
                     GUILayout.Label($"{FormatTime(progressEvent.timeStamp)} {progressEvent.eventName}", GUILayout.Height(20));
                 }
 
+                var q = from x in list
+                        group x by x.eventName into g
+                        let count = g.Count()
+                        orderby count descending
+                        select new { Value = g.Key, Count = count };
+                foreach (var x in q)
+                {
+                    DrawLib.DrawUILine(Color.grey);
+                    GUILayout.Label($"{x.Value} occurred {x.Count} times", GUILayout.Height(20));
+
+                 
+                }
+
                 GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
         }
 
-        private void drawColTimeline()
-        {
-            GUILayout.BeginVertical("box", GUILayout.Width(30));
-            GUILayout.Label($" ", GUILayout.Height(20));
-
-            for (int i = 0; i < 100; i++)
-            {
-                GUILayout.Label($"{FormatTime(i)}", GUILayout.Height(20));
-            }
-
-            GUILayout.EndVertical();
-        }
 
         public string FormatTime(float time)
         {

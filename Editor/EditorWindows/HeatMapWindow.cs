@@ -22,6 +22,7 @@ namespace PlaytestingTool
         Dictionary<string, bool> progressEventNames = new Dictionary<string, bool>();
 
         Vector3Int resolution = new Vector3Int(20, 1, 20);
+        int threshold = 1;
 
         [MenuItem("Tools/PlayTesting Tool/Visualisers/Heat Map")]
         static void Init() => GetWindow<HeatMapWindow>("HeatMap Visualiser");
@@ -70,8 +71,6 @@ namespace PlaytestingTool
             else
                 GUILayout.Label("No Data Collected Yet");
 
-            
-
             if (progressEventNames.Count > 0)
             {
                 for (int i = 0; i < progressEventNames.Keys.Count; i++)
@@ -86,8 +85,10 @@ namespace PlaytestingTool
 
             }
 
-
             GUILayout.Label("Grid Resolution");
+            
+            threshold = (int)EditorGUILayout.Slider("threshold", threshold, 0, 10);
+
             resolution.x = (int)EditorGUILayout.Slider("resolutionX",resolution.x, 1, 100);
             resolution.y = (int)EditorGUILayout.Slider("resolutionY",resolution.y, 1, 100);
             resolution.z = (int)EditorGUILayout.Slider("resolutionZ",resolution.z, 1, 100);
@@ -225,22 +226,29 @@ namespace PlaytestingTool
         {
             foreach (var item in heatMapGrid)
             {
+                if (item.Value >= threshold)
+                {
+                    if (item.Value >= 3)
+                    {
+                        Handles.color = Color.red;
+                        Handles.DrawWireCube(item.Key, sizeSection);
+                    }
+                    else if (item.Value >= 2)
+                    {
+                        Handles.color = Color.blue;
+                        Handles.DrawWireCube(item.Key, sizeSection);
+                    }
 
-                if (item.Value >= 3)
-                {
-                    Handles.color = Color.red;
-                    Handles.DrawWireCube(item.Key, sizeSection);
-                }
-                else if (item.Value >= 2)
-                {
-                    Handles.color = Color.blue;
-                    Handles.DrawWireCube(item.Key, sizeSection);
-                }
-
-                else if (item.Value >= 1)
-                {
-                    Handles.color = Color.yellow;
-                    Handles.DrawWireCube(item.Key, sizeSection);
+                    else if (item.Value >= 1)
+                    {
+                        Handles.color = Color.yellow;
+                        Handles.DrawWireCube(item.Key, sizeSection);
+                    }
+                    else
+                    {
+                        Handles.color = Color.yellow;
+                        Handles.DrawWireCube(item.Key, sizeSection);
+                    }
                 }
             }
         }

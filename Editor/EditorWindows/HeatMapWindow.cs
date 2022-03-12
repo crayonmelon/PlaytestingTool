@@ -228,10 +228,13 @@ namespace PlaytestingTool
             {
                 if (item.Value >= threshold)
                 {
-                    if (item.Value >= 3)
+                  
+                    Handles.color = new Color(item.Value / 5f, 0, 0, 1);
+                    Handles.DrawWireCube(item.Key, sizeSection);
+
+                /*    if (item.Value >= 3)
                     {
                         Handles.color = Color.red;
-                        Handles.DrawWireCube(item.Key, sizeSection);
                     }
                     else if (item.Value >= 2)
                     {
@@ -248,7 +251,7 @@ namespace PlaytestingTool
                     {
                         Handles.color = Color.yellow;
                         Handles.DrawWireCube(item.Key, sizeSection);
-                    }
+                    }*/
                 }
             }
         }

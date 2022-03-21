@@ -15,7 +15,7 @@ namespace PlaytestingTool
 
         /// <summary>
         /// Draws cubed areas sizes defined bu area points 
-        /// </summary>
+        /// </summary
         /// <param name="areaPoints">contains size and location</param>
         /// <param name="serializedObject">for updating the scene</param>
         public static void DrawAreas(List<AreaPoints> areaPoints, SerializedObject serializedObject)
@@ -48,6 +48,13 @@ namespace PlaytestingTool
         /// <param name="chosenPlayersData"></param>
         public static void drawPath(int rightValue,int hSliderValue, List<SessionData> chosenPlayersData)
         {
+            GUIStyle fontstyle = new GUIStyle();
+
+            float zoom = SceneView.currentDrawingSceneView.camera.pixelHeight;
+            int fontSize = 40;
+
+            fontstyle.fontSize = Mathf.FloorToInt(fontSize / zoom);
+
             rightValue = 0;
 
             for (int k = 0; k < chosenPlayersData.Count; k++)
@@ -65,7 +72,7 @@ namespace PlaytestingTool
                 0,
                 playerData.trackedPositions[0].trackedPosition,
                 Quaternion.LookRotation(Vector3.up),
-                1f,
+                PathVisualiserWindow.iconSize,
                 EventType.Repaint);
 
                 if (rightValue < playerData.trackedPositions.Count)
@@ -75,18 +82,25 @@ namespace PlaytestingTool
 
                 for (int i = 0; i < playerData.trackedPositions.Count; i++)
                 {
+                    // Draw Line
                     if (i > 0 && i < playerData.trackedPositions.Count)
                     {
                         Handles.DrawAAPolyLine(playerData.trackedPositions[i - 1].trackedPosition,
                             playerData.trackedPositions[i].trackedPosition);
                     }
 
+                    // Draw Player Point at this time
                     if (i == hSliderValue)
                     {
-                        Handles.CubeHandleCap(0,
+                        Handles.Label(playerData.trackedPositions[i].trackedPosition + Vector3.up * 2,
+                            $"Player:\n (x:{playerData.trackedPositions[i].trackedPosition.x}, y:{playerData.trackedPositions[i].trackedPosition.y}, z:{playerData.trackedPositions[i].trackedPosition.z})", 
+                            fontstyle
+                        );
+
+                        Handles.CylinderHandleCap(0,
                             playerData.trackedPositions[i].trackedPosition,
                             Quaternion.LookRotation(Vector3.up),
-                            1f,
+                            PathVisualiserWindow.iconSize,
                             EventType.Repaint);
                     };
 
@@ -98,7 +112,7 @@ namespace PlaytestingTool
                             0,
                             playerData.trackedPositions[i].trackedPosition,
                             Quaternion.LookRotation(Vector3.up),
-                            1f,
+                            PathVisualiserWindow.iconSize,
                             EventType.Repaint);
 
                             Handles.Label( playerData.trackedPositions[i].trackedPosition + Vector3.up*2, progression.eventName);
@@ -111,7 +125,7 @@ namespace PlaytestingTool
                 0,
                 playerData.trackedPositions[playerData.trackedPositions.Count - 1].trackedPosition,
                 Quaternion.LookRotation(Vector3.up),
-                1f,
+                PathVisualiserWindow.iconSize,
                 EventType.Repaint);
             }
         }

@@ -12,6 +12,8 @@ namespace PlaytestingTool
         [SerializeField] private float stepCount = 0.1f;
         private List<TrackedPosition> trackedPosition = new List<TrackedPosition>();
 
+        Vector3 prevPos; 
+
         void Awake()
         {
             if (tracking == null) tracking = gameObject.transform;
@@ -24,8 +26,14 @@ namespace PlaytestingTool
             while (true)
             {
                 yield return new WaitForSeconds(step);
-                TrackedPosition trackerClass = new TrackedPosition(tracking.position, Time.realtimeSinceStartup);
-                trackedPosition.Add(trackerClass);
+
+                if (tracking.position != prevPos)
+                {
+                    TrackedPosition trackerClass = new TrackedPosition(tracking.position, Time.realtimeSinceStartup);
+                    trackedPosition.Add(trackerClass);
+                }
+
+                prevPos = tracking.position;
             }
         }
 

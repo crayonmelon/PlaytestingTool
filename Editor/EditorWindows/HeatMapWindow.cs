@@ -31,31 +31,49 @@ namespace PlaytestingTool
         SerializedObject so;
         float iconSize = 1;
 
+        Dictionary<Vector3, int> heatMapGrid = new Dictionary<Vector3, int>();
+        Vector3 sizeSection;
+        bool drawMesh, drawSolid;
+
         private void OnEnable()
         {
-            choices = GetSessionDataLib.GetSessionDataChoices(true);
+            RefreshAllData();
+
             Selection.selectionChanged += Repaint;
             SceneView.duringSceneGui += this.DuringSceneGUI;
+            EditorSceneManager.sceneOpened += SceneChange;
         }
 
         private void OnDisable()
         {
             Selection.selectionChanged -= Repaint;
             SceneView.duringSceneGui -= this.DuringSceneGUI;
+            EditorSceneManager.sceneOpened -= SceneChange;
+        }
+        void OnInspectorUpdate()
+        {
+            SceneView.RepaintAll();
         }
 
-        void OnFocus()
+        private void RefreshAllData()
         {
-            SceneView.duringSceneGui -= this.DuringSceneGUI;
-            SceneView.duringSceneGui += this.DuringSceneGUI;
             choices = GetSessionDataLib.GetSessionDataChoices(true);
+            GetChosenData();
+            heatMapGrid.Clear();
+        }
+
+        void SceneChange(Scene scene, OpenSceneMode mode)
+        {
+            RefreshAllData();
         }
 
         Vector3 lowestVector;
         Vector3 highestVector;
         private void OnGUI()
         {
+            GUIOverflow = GUILayout.BeginScrollView(GUIOverflow, false, false);
             GUILayout.BeginVertical("box", GUILayout.Width(300));
+
             GUILayout.Label("Choose Session Data:");
 
             if (choices.Count >= 1)
@@ -64,8 +82,6 @@ namespace PlaytestingTool
                 if (GUILayout.Button("Select"))
                 {
                     GetChosenData();
-                    InitHeatMapGrid(resolution, highestVector, lowestVector);
-                    CheckBounds();
                 }
             }
             else
@@ -80,21 +96,36 @@ namespace PlaytestingTool
                     progressEventNames[eventName] = GUILayout.Toggle(progressEventNames[eventName], eventName);
                 }
 
-                GUILayout.Label("Icon Size");
-                iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15,GUILayout.Width(300));
+                DrawLib.DrawUILine(Color.grey);
+
+                GUILayout.Label("Points Settings");
+                iconSize = EditorGUILayout.Slider("icon Size", iconSize, .1f, 15);
+                DrawLib.DrawUILine(Color.grey);
+
+                if (GUILayout.Button("Draw Heatmap", GUILayout.Width(300)))
+                {
+                    InitHeatMapGrid(resolution, highestVector, lowestVector);
+                    CheckBounds();
+                    drawMesh = true;
+                }
+
+                GUILayout.Label("Heatmap Settings");
+
+                threshold = (int)EditorGUILayout.Slider("threshold", threshold, 0, 10);
+                resolution.x = (int)EditorGUILayout.Slider("resolutionX", resolution.x, 1, 100);
+                resolution.y = (int)EditorGUILayout.Slider("resolutionY", resolution.y, 1, 100);
+                resolution.z = (int)EditorGUILayout.Slider("resolutionZ", resolution.z, 1, 100);
+
+                DrawLib.DrawUILine(Color.grey);
+
+                drawMesh = EditorGUILayout.Toggle("Draw Mesh", drawMesh);
+                drawSolid = EditorGUILayout.Toggle("Draw Solid", drawSolid);
 
             }
 
-            GUILayout.Label("Grid Resolution");
-            
-            threshold = (int)EditorGUILayout.Slider("threshold", threshold, 0, 10);
-
-            resolution.x = (int)EditorGUILayout.Slider("resolutionX",resolution.x, 1, 100);
-            resolution.y = (int)EditorGUILayout.Slider("resolutionY",resolution.y, 1, 100);
-            resolution.z = (int)EditorGUILayout.Slider("resolutionZ",resolution.z, 1, 100);
-
-
             GUILayout.EndVertical();
+            GUILayout.EndScrollView();
+
             GUILayout.FlexibleSpace();
 
             if (GUILayout.Button("Refresh", GUILayout.Width(300)))
@@ -121,15 +152,12 @@ namespace PlaytestingTool
             }
 
             drawGrid();
-            SceneView.RepaintAll();
         }
 
-        Dictionary<Vector3, int> heatMapGrid = new Dictionary<Vector3, int>();
-        Vector3 sizeSection;
         void InitHeatMapGrid(Vector3Int resolution, Vector3 startPos, Vector3 endPos)
         {
-            Debug.Log($"{startPos} {endPos}");
             heatMapGrid.Clear();
+            Debug.Log($"{startPos} {endPos}");
 
             Vector3 CenterVector = Vector3.Lerp(startPos, endPos, 0.5f);
             Vector3 size = new Vector3(Mathf.Abs(startPos.x - endPos.x), Mathf.Abs(startPos.y - endPos.y), Mathf.Abs(startPos.z - endPos.z));
@@ -224,37 +252,22 @@ namespace PlaytestingTool
 
         void drawGrid()
         {
-            foreach (var item in heatMapGrid)
-            {
-                if (item.Value >= threshold)
+            if (heatMapGrid.Keys.Count > 0)
+            { 
+                foreach (var item in heatMapGrid)
                 {
-                  
-                    Handles.color = new Color(item.Value / 5f, 0, 0, 1);
-                    Handles.DrawWireCube(item.Key, sizeSection);
+                    if (item.Value >= threshold)
+                    {
+                        Handles.color = new Color(item.Value / 5f, 0, 0, 1);
+                        if (drawMesh)
+                            Handles.DrawWireCube(item.Key, sizeSection);
 
-                /*    if (item.Value >= 3)
-                    {
-                        Handles.color = Color.red;
-                    }
-                    else if (item.Value >= 2)
-                    {
-                        Handles.color = Color.blue;
-                        Handles.DrawWireCube(item.Key, sizeSection);
-                    }
+                        if (drawSolid)
+                            Handles.CubeHandleCap(0, item.Key, Quaternion.LookRotation(Vector3.up), sizeSection.x, EventType.Repaint);
 
-                    else if (item.Value >= 1)
-                    {
-                        Handles.color = Color.yellow;
-                        Handles.DrawWireCube(item.Key, sizeSection);
                     }
-                    else
-                    {
-                        Handles.color = Color.yellow;
-                        Handles.DrawWireCube(item.Key, sizeSection);
-                    }*/
                 }
             }
         }
-
     }
 }

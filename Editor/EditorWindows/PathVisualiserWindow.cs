@@ -27,7 +27,7 @@ namespace PlaytestingTool
 
         //labels
         string SceneName;
-        float iconSize = 1;
+        public static float iconSize = 1;
 
         //timeline 
         int TimelineValue = 0;
@@ -36,12 +36,13 @@ namespace PlaytestingTool
         //toggle buttons
         bool drawAreas = false;
         bool drawPaths = false;
+        bool drawText = false;
+
 
         //area points
         public List<AreaPoints> areaPoints = new List<AreaPoints>();
         SerializedProperty propAreaPoints;
 
-        //
         Vector2 PosOverFlow;
         Vector2 GUIOverflow;
 
@@ -93,7 +94,7 @@ namespace PlaytestingTool
 
         public void OnGUI()
         {
-            GUIOverflow = GUILayout.BeginScrollView(GUIOverflow, false, true);
+            GUIOverflow = GUILayout.BeginScrollView(GUIOverflow, false, false);
             GUILayout.BeginVertical("box", GUILayout.Width(300));
 
             GUILayout.Label("Choose Session Data:");
@@ -106,8 +107,6 @@ namespace PlaytestingTool
             }
             else
                 GUILayout.Label("No Data Collected Yet");
-
-            GUILayout.EndHorizontal();
 
             GUILayout.Label($"You are in scene: {SceneName}", EditorStyles.boldLabel);
 
@@ -149,6 +148,8 @@ namespace PlaytestingTool
 
             GUILayout.Label("Icon Size");
             iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15);
+
+            GUILayout.EndVertical();
             GUILayout.EndScrollView();
         }
 

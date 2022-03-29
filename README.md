@@ -1,23 +1,21 @@
 # Playtesting tool
 
-- A Unity package consisting of tools for tracking, storing and visualising play-session to aid with playtesting
+### A Unity package for tracking, storing and visualising play-session to aid with playtesting.
 --- 
-### What is working so far?
 
-#### Recoding Data
-- The ability to record 
-- Tracking Movement 
-  - track the players position at a given time throughout a play session
+### It consists of 3 separate modules:
+#### 1️⃣ Data gathering 
+- A collection of **Unity Tracker Components** to track data during game runtime.
+- Ability to track:
+ - gameobject movement.
+ - game progression.
 
-- Tracking Progression Events
-  - track specified events within your game
+#### 2️⃣ Data Storage 
+- A way to store the tracked data as JSON files.
+- ability to store JSON files locally or remotely.
 
-#### Storing 
-- Data is saved locally within the unity project itself inside PlayData
-
-#### Visualising 
-- data collected can be visualised within the scene the data was collected. 
-- Multiple  data collected can be
+#### 3️⃣️ Visualise Data
+- Ability to presenting the data within the 3D scene the data was initially collected in.
 
 ---
 # Setup and Using 
@@ -40,7 +38,12 @@ To Collect data in runtime you will need to include A **Tracker Mananger** and *
 
 #### Tracker Components
 
-<img src="https://user-images.githubusercontent.com/11542929/160643513-1c3fcd74-b76a-4d10-a992-0e849ca18f92.gif" alt="Tracker Components Tutorial" width="600"/>
+<img src="https://user-images.githubusercontent.com/11542929/160643513-1c3fcd74-b76a-4d10-a992-0e849ca18f92.gif" alt="Tracker Components Tutorial" width="300"/>
+
+## 3️⃣ Storing Data
+
+#### Setting Path for Session Data
+
 
 
 

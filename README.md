@@ -19,31 +19,25 @@
 - data collected can be visualised within the scene the data was collected. 
 - Multiple  data collected can be
 
-- Players path
-- ![image](https://user-images.githubusercontent.com/11542929/147141844-ef03da1b-02f2-46eb-9950-adf47732f112.png)
-
- - Draws the players path during the session is drawn c
-
 ---
 # Setup and Using 
 
-## Install 
+## 1️⃣ Install the package via the Unity package manager.
 
-1️⃣ Install the package via the Unity package manager.
-- In the package Manager window press the + plus button, it will bring up a dropdown. Selected Add package from git URL
+- In the package Manager window press the + plus button, it will bring up a dropdown. Selected Add package from git URL.
 - Paste the git URL in the input field provided.
-- Select the components You want and install
+- Press the Add button.
 
-## Tracking Data
-- As of now you can track the players position, and the players progression through the use of unity components and functions. 
+![Unity_T6KVcVWNPK](https://user-images.githubusercontent.com/11542929/160628985-aa45ca14-2b77-42d3-abae-2d56643fd9d5.gif)
 
-### Position Tracking
-- You will need to add the 
+## 2️⃣Tracking Data
+
+To Collect data in runtime you will need to include A **Tracker Mananger** and **Tracker Components** that are provided in the package. 
+
+#### Tracker Manager
+
+<img src="https://user-images.githubusercontent.com/11542929/160632185-c1f8933b-a3a3-4e8a-8d7a-49f7c7417574.gif" alt="Tracker Mananger Tutorial" width="600"/>
 
 
-### Progression Tracking
-- TODO
-
-## Visualizing 
 
 

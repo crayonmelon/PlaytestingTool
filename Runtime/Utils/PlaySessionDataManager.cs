@@ -213,17 +213,16 @@ namespace PlaytestingTool
             Debug.Log($"Successfuly Downloaded JSON files from DATABASE \n {MissingJsonFiles} files failed");
         }
 
-        public static void ConvertToCSV(string fileName)
+        public static void ConvertToCSV(SessionData sessionData)
         {
-            SessionData sessionData = LoadPlayerDataJson(fileName);
             string StartingRowLine = "Time";
-
-            Debug.Log(sessionData.trackedProgressions.Count);
-
             try
             {
-                string csvFileName = $"SessionData {sessionData.objectName}.csv";
-                string path = $"{Settings.FOLDERPATH}/";
+                if (sessionData.trackedProgressions.Count <= 0)
+                    return;
+
+                string csvFileName = $"SessionData_{sessionData.objectName}_{sessionData.sessionName.Substring(0, 4)}.csv";
+                string path = $"{Settings.FOLDERPATH}/CSV/";
 
                 if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 

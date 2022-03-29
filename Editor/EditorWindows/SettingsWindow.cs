@@ -96,8 +96,8 @@ namespace PlaytestingTool
 
             if (GUILayout.Button("Convert To CSV"))
             {
-
-                PlaySessionDataManager.ConvertToCSV("21-03-22 PlaySession 0105/SessionData progressionData.json");
+                ConvertToCSVWindow inst = GetWindow<ConvertToCSVWindow>("Convert To CSV", typeof(ConvertToCSVWindow));
+                inst.Show();
             }
 
             GUILayout.FlexibleSpace();

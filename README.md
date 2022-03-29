@@ -38,6 +38,8 @@ To Collect data in runtime you will need to include A **Tracker Mananger** and *
 
 <img src="https://user-images.githubusercontent.com/11542929/160632185-c1f8933b-a3a3-4e8a-8d7a-49f7c7417574.gif" alt="Tracker Mananger Tutorial" width="600"/>
 
+#### Tracker Components
+<img src="https://user-images.githubusercontent.com/11542929/160642026-57982494-21a8-43b7-a4b3-adccff1f8434.gif" alt="Tracker Components Tutorial" width="600"/>
 
 
 

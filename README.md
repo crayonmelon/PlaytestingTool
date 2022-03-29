@@ -7,8 +7,8 @@
 #### 1️⃣ Data gathering 
 - A collection of **Unity Tracker Components** to track data during game runtime.
 - Ability to track:
- - gameobject movement.
- - game progression.
+  - gameobject movement.
+  - game progression.
 
 #### 2️⃣ Data Storage 
 - A way to store the tracked data as JSON files.

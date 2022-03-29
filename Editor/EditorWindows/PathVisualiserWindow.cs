@@ -122,6 +122,7 @@ namespace PlaytestingTool
                 TimelineValue = Mathf.RoundToInt(GUILayout.HorizontalSlider(TimelineValue, 0, MaxTime));
                 GUILayout.Label(" ");
 
+                
             }
 
             drawAreas = GUILayout.Toggle(drawAreas, "Draw Areas");
@@ -146,8 +147,13 @@ namespace PlaytestingTool
                 GUILayout.EndScrollView();
             }
 
-            GUILayout.Label("Icon Size");
-            iconSize = GUILayout.HorizontalSlider(iconSize, .1f, 15);
+            if (drawPaths)
+            {
+                DrawLib.DrawUILine(Color.grey);
+                GUILayout.Label("Settings");
+                drawText = GUILayout.Toggle(drawText, "Draw Text Label");
+                iconSize = EditorGUILayout.Slider("Icon Size", iconSize, .1f, 15);
+            }
 
             GUILayout.EndVertical();
             GUILayout.EndScrollView();

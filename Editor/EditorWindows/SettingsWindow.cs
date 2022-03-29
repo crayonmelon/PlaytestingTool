@@ -94,6 +94,14 @@ namespace PlaytestingTool
                 inst.Show();
             }
 
+            if (GUILayout.Button("Convert To CSV"))
+            {
+
+                PlaySessionDataManager.ConvertToCSV("21-03-22 PlaySession 0105/SessionData progressionData.json");
+            }
+
+            GUILayout.FlexibleSpace();
+
             if (GUILayout.Button("Save Settings"))
             {
                 Settings.SaveSettings();
@@ -103,6 +111,8 @@ namespace PlaytestingTool
             {
                 Settings.LoadSettings();
             }
+
+
 
         }
         void DoWindow(int unusedWindowID)

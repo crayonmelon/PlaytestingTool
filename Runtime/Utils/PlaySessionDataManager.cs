@@ -3,11 +3,10 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Collections;
 using UnityEngine.Networking;
 using System.Net;
-using System.Data.SqlTypes;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace PlaytestingTool
 {
@@ -121,7 +120,7 @@ namespace PlaytestingTool
         }
 
         /// <summary>
-        /// 
+        /// Pull data from the enpoint is specified in the Tools Settings <c>Settings.PULLREQUESTLINK</c></list> 
         /// </summary>
         public static void DownloadData()
         {
@@ -212,6 +211,66 @@ namespace PlaytestingTool
             }
 
             Debug.Log($"Successfuly Downloaded JSON files from DATABASE \n {MissingJsonFiles} files failed");
+        }
+
+        public static void ConvertToCSV(string fileName)
+        {
+            SessionData sessionData = LoadPlayerDataJson(fileName);
+            string StartingRowLine = "Time";
+
+            Debug.Log(sessionData.trackedProgressions.Count);
+
+            try
+            {
+                string csvFileName = $"SessionData {sessionData.objectName}.csv";
+                string path = $"{Settings.FOLDERPATH}/";
+
+                if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+                TextWriter textWriter = new StreamWriter(path + csvFileName, false);
+
+                List<String> CSVLine = new List<string>();
+                string firstLine = " ,";
+
+                foreach (var ProgressionData in GenerateProgressDictionary(sessionData))
+                {
+                    firstLine += $"{ProgressionData.Key},";
+
+                    for (int i = 0; i < ProgressionData.Value.Count; i++)
+                    {
+                        if (i < CSVLine.Count)
+                            CSVLine[i] += $"{ProgressionData.Value[i]},";
+                        else
+                            CSVLine.Add($"{StartingRowLine}, {ProgressionData.Value[i]},");
+                    }
+                }
+
+                textWriter.WriteLine(firstLine);
+
+                foreach (var item in CSVLine)
+                    textWriter.WriteLine(item);
+
+                textWriter.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        }
+
+        public static Dictionary<string, List<string>> GenerateProgressDictionary(SessionData sessionData)
+        {
+            Dictionary<string, List<string>> progressEventNames = new Dictionary<string, List<string>> ();
+
+            foreach (var progressEvent in sessionData.trackedProgressions)
+            {
+                if (!progressEventNames.ContainsKey(progressEvent.eventName))
+                    progressEventNames.Add(progressEvent.eventName, new List<string>() { progressEvent.timeStamp.ToString() });
+                else
+                    progressEventNames[progressEvent.eventName].Add(progressEvent.timeStamp.ToString());
+            }
+
+            return progressEventNames;
         }
     }
 }

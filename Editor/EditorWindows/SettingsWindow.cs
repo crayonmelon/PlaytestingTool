@@ -58,22 +58,25 @@ namespace PlaytestingTool
         {
             GUILayout.Label("Settings");
 
-            localFolderPath = EditorGUILayout.TextField("Local Folder Path", Settings.FOLDERPATH);
+            enableSaving = EditorGUILayout.Toggle(new GUIContent("Enable Local Saving","When enables the generated data will be saved locally in the specified folder"), Settings.ENABLE);
+            Settings.ENABLE = enableSaving;
+
+            localFolderPath = EditorGUILayout.TextField(new GUIContent("Local Folder Path", "Where the Session Data is saved"), Settings.FOLDERPATH);
             Settings.FOLDERPATH = localFolderPath;
 
-            uploadData = EditorGUILayout.Toggle("Enable Uploading Data", Settings.UPLOADDATA);
+            uploadData = EditorGUILayout.Toggle(new GUIContent("Enable Uploading Data", "When enabled the tool will try to post the SessionData to the specified Endpoint"), Settings.UPLOADDATA);
             Settings.UPLOADDATA = uploadData;
             
             if (Settings.UPLOADDATA)
             {
-                webEndpoint = EditorGUILayout.TextField("Push Request Enpoint:", Settings.WEBENDPOINT);
+                webEndpoint = EditorGUILayout.TextField(new GUIContent("Post Request Enpoint:", "the endpoint to which the data is uploaded at the end of the play session."), Settings.WEBENDPOINT);
                 Settings.WEBENDPOINT = webEndpoint;
 
-                pullRequest = EditorGUILayout.TextField("Get Request Enpoint:", Settings.PULLREQUESTLINK);
+                pullRequest = EditorGUILayout.TextField(new GUIContent("Get Request Enpoint:", "the endpoint to get all data from the database. Is used by the **Download Data Button**."), Settings.PULLREQUESTLINK);
                 Settings.PULLREQUESTLINK = pullRequest;
 
-                EditorGUILayout.LabelField("AuthToken");
-                showAuthField = EditorGUILayout.Toggle("Hide", showAuthField);
+                EditorGUILayout.LabelField(new GUIContent("AuthToken", "Auth token sent in the header of the Post and get requests for Authorisation.") );
+                showAuthField = EditorGUILayout.Toggle(new GUIContent("Hide","Hide auth Token"), showAuthField);
                 if (!showAuthField)
                 {
                     GUIStyle style = new GUIStyle(EditorStyles.textArea);
@@ -83,10 +86,8 @@ namespace PlaytestingTool
                 }
             }
      
-            enableSaving = EditorGUILayout.Toggle("Enable Local Saving", Settings.ENABLE);
-            Settings.ENABLE = enableSaving;
-
-            if (GUILayout.Button("Download Data"))
+            
+            if (GUILayout.Button(new GUIContent("Download Data","Downloads all Session Data from the database with the specified get endpoint")))
             {
                 PlaySessionDataManager.DownloadData();
 
@@ -94,7 +95,7 @@ namespace PlaytestingTool
                 inst.Show();
             }
 
-            if (GUILayout.Button("Convert To CSV"))
+            if (GUILayout.Button(new GUIContent("Convert To CSV", "Converts tracked progression JSON file Data to a CSV file")))
             {
                 ConvertToCSVWindow inst = GetWindow<ConvertToCSVWindow>("Convert To CSV", typeof(ConvertToCSVWindow));
                 inst.Show();
@@ -102,12 +103,12 @@ namespace PlaytestingTool
 
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Save Settings"))
+            if (GUILayout.Button(new GUIContent("Save Settings", "Save the settings set in the tool. Settings settings are saved as a JSON file at Assets/Settings/settingsData.json")))
             {
                 Settings.SaveSettings();
             }
 
-            if (GUILayout.Button("Load Settings"))
+            if (GUILayout.Button(new GUIContent("Load Settings", "load settings from Assets/Settings/settingsData.json")))
             {
                 Settings.LoadSettings();
             }

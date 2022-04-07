@@ -17,7 +17,7 @@ namespace PlaytestingTool {
 
         static string progressionData = "progressionData";
 
-        private void Start()
+        private void OnEnable()
         {
             DontDestroyOnLoad(this.gameObject);
 
@@ -46,7 +46,6 @@ namespace PlaytestingTool {
             sessionData.SceneName = SceneManager.GetActiveScene().name;
 
             SessionDataCollection.Add(sessionData);
-            //PlaySessionDataManager.SavePlayerDatJson(sessionData);
         }
 
         static int GetSessionDataPos()
@@ -80,7 +79,7 @@ namespace PlaytestingTool {
             //TODO playerData.trackedStatChanges.Add(trackedStatChange);
         }
 
-        void OnApplicationQuit()
+        void OnDestroy()
         {
             saveData();
         }
@@ -91,16 +90,20 @@ namespace PlaytestingTool {
             foreach (var sessionData in SessionDataCollection)
             {
                 Debug.Log("New FileSaved " + sessionData.objectName + "SceneName " + sessionData.sessionName);
+                Debug.Log($"Name: {sessionData.objectName}");
 
+                sessionData.UniqueID = System.Guid.NewGuid().ToString();
                 sessionData.dateCreated = $"{System.DateTime.Now:dd-MM-yy}";
 
-                PlaySessionDataManager.SavePlayerDatJson(sessionData);
-
-                if (Settings.UPLOADDATA)
+                if(sessionData.trackedPositions.Count > 0 || sessionData.trackedProgressions.Count > 0)
                 {
-                    Debug.Log("Uploading Data...");
-                    PlaySessionDataManager.UploadSessionData(sessionData);
+                    PlaySessionDataManager.SavePlayerDatJson(sessionData);
 
+                    if (Settings.UPLOADDATA)
+                    {
+                        Debug.Log("Uploading Data...");
+                        PlaySessionDataManager.UploadSessionData(sessionData);
+                    }
                 }
             }
         }

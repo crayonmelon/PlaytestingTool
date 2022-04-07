@@ -23,7 +23,8 @@ namespace PlaytestingTool
         /// <param name="sessionData">The Session data you wish to save locally, it will be converted to Json</param>
         public static void SavePlayerDatJson(SessionData sessionData)
         {
-            string folderName = $"{DateTime.Now:dd-MM-yy} PlaySession {sessionData.sessionName.Substring(0, 4)}";
+            Debug.Log(sessionData.sessionName);
+            string folderName = $"{DateTime.Now:dd-MM-yy} SessionData {sessionData.sessionName.Substring(0, 4)}";
             Debug.Log($"DATA CREATED LOCALLY</a>");
 
             //FileStream fs = new FileStream($"./Assets/SessionData/{folderName}/{fileName}.dat", FileMode.Create);

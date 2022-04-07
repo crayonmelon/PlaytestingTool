@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using System.IO;
-
+using System;
 namespace PlaytestingTool
 {
     public class GetSessionDataLib : Editor
@@ -15,12 +15,17 @@ namespace PlaytestingTool
         /// </summary>
         /// <param name="specificScene">If you want data to be from the specific scene opened</param>
         /// <returns>Names of session data ie. </returns>
+        /// 
+#if UNITY_EDITOR
         public static List<string> GetSessionDataChoices(bool specificScene)
         {
             List<string> choices = new List<string>();
             string SceneName = EditorSceneManager.GetActiveScene().name;
 
-            string path = $"{Settings.FOLDERPATH}/";
+            Settings.LoadSettings();
+
+            string path = $"{Settings.FOLDERPATH}";
+
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
             string[] allDir = Directory.GetDirectories(path);
@@ -29,8 +34,8 @@ namespace PlaytestingTool
             foreach (string dir in allDir)
             {
                 string LevelName = new DirectoryInfo(dir).Name;
-                string[] allFiles = Directory.GetFiles($"{Settings.FOLDERPATH}/{LevelName}/", "*.json");
 
+                string[] allFiles = Directory.GetFiles($"{path}/{LevelName}/", "*.json");
 
                 foreach (string file in allFiles)
                 {
@@ -51,8 +56,10 @@ namespace PlaytestingTool
                 }
             }
 
+
             return choices;
         }
+#endif
 
         /// <summary>
         /// 

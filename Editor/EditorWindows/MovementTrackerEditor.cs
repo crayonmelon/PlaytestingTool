@@ -9,11 +9,15 @@ namespace PlaytestingTool
     [CanEditMultipleObjects]
     public class MovementTrackerEditor : Editor
     {
+
         SerializedProperty tracking;
+        /// <summary>
+        /// hello
+        /// </summary>
         SerializedProperty stepCount;
 
         bool showBtn = true;
-        private void OnEnable()
+        private void OnEnable() 
         {
             tracking = serializedObject.FindProperty("tracking");
             stepCount = serializedObject.FindProperty("stepCount");

@@ -9,6 +9,7 @@ namespace PlaytestingTool
     public class MovementTracker : MonoBehaviour
     {
         [SerializeField] private Transform tracking;
+        [Tooltip("Bitches")]
         [SerializeField] private float stepCount = 0.1f;
         private List<TrackedPosition> trackedPosition = new List<TrackedPosition>();
 
@@ -38,6 +39,11 @@ namespace PlaytestingTool
         }
 
         private void OnDisable() => SaveData();
-        public void SaveData() => TrackerManager.SaveMovement(trackedPosition, tracking.name);
+        public void SaveData()
+        {
+            Debug.Log("DataSaved");
+            TrackerManager.SaveMovement(trackedPosition, tracking.name);
+
+        }
     }
 }

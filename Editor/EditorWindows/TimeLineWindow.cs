@@ -35,16 +35,21 @@ namespace PlaytestingTool
         {
             GUILayout.BeginVertical("box", GUILayout.Width(300));
 
-            GUILayout.Label("Choose Session Data:");
 
             if (choices.Count >= 1)
             {
-                dataFlags = EditorGUILayout.MaskField("Player Data", dataFlags, choices.ToArray());
+                GUILayout.Label("Choose Session Data:");
+
+                GUILayout.BeginHorizontal("box");
+                dataFlags = EditorGUILayout.MaskField(dataFlags, choices.ToArray());
+
                 if (GUILayout.Button("Select"))
                 {
                     ChoosenSessionDataSets = GetSessionDataLib.GetChosenSessionData(choices, dataFlags, false);
                     //  Debug.Log(ChoosenSessionDataSets.Count);
                 }
+
+                GUILayout.EndHorizontal();
             }
             else
                 GUILayout.Label("No Data Collected Yet");

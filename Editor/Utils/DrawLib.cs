@@ -93,7 +93,7 @@ namespace PlaytestingTool
                     if (i == hSliderValue)
                     {
                         Handles.Label(playerData.trackedPositions[i].trackedPosition + Vector3.up * 2,
-                            $"Player:\n (x:{playerData.trackedPositions[i].trackedPosition.x}, y:{playerData.trackedPositions[i].trackedPosition.y}, z:{playerData.trackedPositions[i].trackedPosition.z})", 
+                            $"{playerData.objectName}:\n (x:{playerData.trackedPositions[i].trackedPosition.x}, y:{playerData.trackedPositions[i].trackedPosition.y}, z:{playerData.trackedPositions[i].trackedPosition.z})", 
                             fontstyle
                         );
 

@@ -19,7 +19,7 @@ namespace PlaytestingTool
         void Progression()
         {
             Debug.Log("Ping");
-            ProgressionEvent.ProgressionTrigger("PlayerReachedBox", 12);
+            ProgressionEvent.ProgressionTriggerWithPosition("PlayerReachedBox", transform.position, 2);
         }
     }
 }

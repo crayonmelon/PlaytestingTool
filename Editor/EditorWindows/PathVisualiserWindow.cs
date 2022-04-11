@@ -97,36 +97,49 @@ namespace PlaytestingTool
             GUIOverflow = GUILayout.BeginScrollView(GUIOverflow, false, false);
             GUILayout.BeginVertical("box", GUILayout.Width(300));
 
-            GUILayout.Label("Choose Session Data:");
 
             if (choices.Count >= 1)
             {
-                dataFlags = EditorGUILayout.MaskField("Player Data", dataFlags, choices.ToArray());
-                if (GUILayout.Button("Select"))
+                GUILayout.Label(new GUIContent("Choose Session Data:", "A list of session data folders with tracked position data in them. \n Select the data you wish to visualise."));
+
+                GUILayout.BeginHorizontal("box");
+                dataFlags = EditorGUILayout.MaskField(dataFlags, choices.ToArray());
+
+                if (GUILayout.Button(new GUIContent("Select", "Hio")))
+                {
                     SetChosenPlayerData();
+                    drawPaths = true;
+                }
+
+                GUILayout.EndHorizontal();
+                GUILayout.Label($"(Data From Scene: {SceneName})", EditorStyles.boldLabel);
+                
             }
             else
                 GUILayout.Label("No Data Collected Yet");
 
-            GUILayout.Label($"You are in scene: {SceneName}", EditorStyles.boldLabel);
-
-            DrawLib.DrawUILine(Color.grey);
-
-            drawPaths = GUILayout.Toggle(drawPaths, "Draw Player Paths");
-
-            if (drawPaths)
+            if (ChosenSessionData.Count > 0)
             {
+                if (drawPaths)
+                {
+                    DrawLib.DrawUILine(Color.grey);
+
+                    GUILayout.Label("Timeline");
+                    TimelineValue = Mathf.RoundToInt(GUILayout.HorizontalSlider(TimelineValue, 0, MaxTime));
+                    GUILayout.Label(" ");
+
+                }
+
                 DrawLib.DrawUILine(Color.grey);
+                GUILayout.Label("Settings");
+                drawPaths = GUILayout.Toggle(drawPaths, "Draw Player Paths");
+                drawText = GUILayout.Toggle(drawText, "Draw Text Label");
+                iconSize = EditorGUILayout.Slider("Icon Size", iconSize, .1f, 15);
 
-                GUILayout.Label("Timeline");
-                TimelineValue = Mathf.RoundToInt(GUILayout.HorizontalSlider(TimelineValue, 0, MaxTime));
-                GUILayout.Label(" ");
-
-                
+                DrawLib.DrawUILine(Color.grey);
+                drawAreas = GUILayout.Toggle(drawAreas, "Draw Areas");
             }
-
-            drawAreas = GUILayout.Toggle(drawAreas, "Draw Areas");
-
+   
             if (drawAreas)
             {
                 if (areaPoints.Count == 0)
@@ -140,19 +153,9 @@ namespace PlaytestingTool
                 if (GUILayout.Button("Check Bounds"))
                     CheckAreaBoundsButton();
 
-                PosOverFlow = GUILayout.BeginScrollView(PosOverFlow, false, true);
                 GUILayout.Label(" ");
                 GUILayout.Label(areaBreakdownText);
 
-                GUILayout.EndScrollView();
-            }
-
-            if (drawPaths)
-            {
-                DrawLib.DrawUILine(Color.grey);
-                GUILayout.Label("Settings");
-                drawText = GUILayout.Toggle(drawText, "Draw Text Label");
-                iconSize = EditorGUILayout.Slider("Icon Size", iconSize, .1f, 15);
             }
 
             GUILayout.EndVertical();

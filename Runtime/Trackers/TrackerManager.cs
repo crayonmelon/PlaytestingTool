@@ -95,15 +95,12 @@ namespace PlaytestingTool {
                 sessionData.UniqueID = System.Guid.NewGuid().ToString();
                 sessionData.dateCreated = $"{System.DateTime.Now:dd-MM-yy}";
 
-                if(sessionData.trackedPositions.Count > 0 || sessionData.trackedProgressions.Count > 0)
-                {
-                    PlaySessionDataManager.SavePlayerDatJson(sessionData);
+                PlaySessionDataManager.SavePlayerDatJson(sessionData);
 
-                    if (Settings.UPLOADDATA)
-                    {
-                        Debug.Log("Uploading Data...");
-                        PlaySessionDataManager.UploadSessionData(sessionData);
-                    }
+                if (Settings.UPLOADDATA)
+                {
+                    Debug.Log("Uploading Data...");
+                    PlaySessionDataManager.UploadSessionData(sessionData);
                 }
             }
         }

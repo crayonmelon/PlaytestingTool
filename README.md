@@ -19,10 +19,6 @@
 - Ability to presenting the data within the 3D scene the data was initially collected in.
 
 ---
-### Setup Can be found here: [**Startup Page**](https://github.com/ciaranmalone/PlaytestingTool/wiki/Setup).
+### Setup Can be found here: [**Startup Page**](https://github.com/ciaranmalone/PlaytestingTool/wiki/Setup)
 
 ### Full documentation is here: [**Home**](https://github.com/ciaranmalone/PlaytestingTool/wiki/Home)
-
-
-
-

@@ -336,10 +336,9 @@ namespace PlaytestingTool
         {
             for (int i = 0; i < heatMapGrid.Keys.Count; i++)
             {
+                Bounds bounds = new Bounds(heatMapGrid.Keys.ElementAt(i), sizeSection);
                 foreach (var vector3 in progressEventPos[heatMapOptions[chosenHeatMapIndex]])
                 {
-                    Bounds bounds = new Bounds(heatMapGrid.Keys.ElementAt(i), sizeSection);
-
                     if (bounds.Contains(vector3))
                     {
                         heatMapGrid[heatMapGrid.Keys.ElementAt(i)] = 1 + heatMapGrid[heatMapGrid.Keys.ElementAt(i)];

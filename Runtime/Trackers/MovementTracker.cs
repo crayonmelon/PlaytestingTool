@@ -9,15 +9,17 @@ namespace PlaytestingTool
     public class MovementTracker : MonoBehaviour
     {
         [SerializeField] private Transform tracking;
-        [Tooltip("Bitches")]
+        [Tooltip("How often is the position tracked (0.1 = 0.1second).")]
         [SerializeField] private float stepCount = 0.1f;
+        [Tooltip("If true the component will track this specific component\nIf false a field will display to add the object you wish to track.")]
+        [SerializeField] bool thisObject = true;
         private List<TrackedPosition> trackedPosition = new List<TrackedPosition>();
 
         Vector3 prevPos; 
 
         void Awake()
         {
-            if (tracking == null) tracking = gameObject.transform;
+            if (thisObject) tracking = gameObject.transform;
         }
 
         void Start() => StartCoroutine(addNewPos(tracking, stepCount));

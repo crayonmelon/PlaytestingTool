@@ -11,30 +11,27 @@ namespace PlaytestingTool
     {
 
         SerializedProperty tracking;
-        /// <summary>
-        /// hello
-        /// </summary>
         SerializedProperty stepCount;
+        SerializedProperty thisObject;
 
         bool showBtn = true;
         private void OnEnable() 
         {
             tracking = serializedObject.FindProperty("tracking");
             stepCount = serializedObject.FindProperty("stepCount");
+            thisObject = serializedObject.FindProperty("thisObject");
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(stepCount);
+            EditorGUILayout.PropertyField(thisObject);
 
-            showBtn = EditorGUILayout.Toggle("Track This GameObject", showBtn);
-
-            if (!showBtn)
+            if (!thisObject.boolValue)
                 EditorGUILayout.PropertyField(tracking);
 
             serializedObject.ApplyModifiedProperties();
-
         }
     }
 }

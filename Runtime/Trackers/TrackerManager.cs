@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 namespace PlaytestingTool { 
     public class TrackerManager : MonoBehaviour
     {
+        static TrackerManager instance;
+
         [HideInInspector]
         public static List<SessionData> SessionDataCollection = new List<SessionData>();
 
@@ -16,6 +18,17 @@ namespace PlaytestingTool {
         //public static float startingTime;
 
         static string progressionData = "progressionData";
+
+        void Awake()
+        {
+            if (instance == null)
+                instance = this;
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
+        }
 
         private void OnEnable()
         {

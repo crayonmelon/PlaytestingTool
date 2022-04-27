@@ -90,9 +90,6 @@ namespace PlaytestingTool
             if (GUILayout.Button(new GUIContent("Download Data","Downloads all Session Data from the database with the specified get endpoint")))
             {
                 PlaySessionDataManager.DownloadData();
-
-                PopupWindow inst = ScriptableObject.CreateInstance<PopupWindow>();
-                inst.Show();
             }
 
             if (GUILayout.Button(new GUIContent("Convert To CSV", "Converts tracked progression JSON file Data to a CSV file")))
